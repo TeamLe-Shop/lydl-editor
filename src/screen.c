@@ -25,6 +25,7 @@ void screen_init(void)
     keypad(stdscr, TRUE);
 
     buffer = malloc(32);
+    memset(buffer, 0, 32);
 }
 
 void init_colors(void)

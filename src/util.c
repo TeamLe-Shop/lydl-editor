@@ -48,7 +48,7 @@ void draw_content(char* buf, int y, int x)
 
 void print_limitto(char* buf, int y, int x, size_t limit)
 {
-    char* temp = malloc(strlen(buf));
+    char* temp = malloc(strlen(buf) + 1);
 
     strcpy(temp, buf);
 
