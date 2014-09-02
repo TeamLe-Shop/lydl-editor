@@ -8,10 +8,9 @@
 
 void fill(char ch, int row)
 {
-    int y, x;
-    UNUSED(y);
-    int i;
+    int y, x, i;
     char c[2];
+    UNUSED(y);
 
     c[0] = ch;
     c[1] = 0;
@@ -24,9 +23,8 @@ void fill(char ch, int row)
 
 void fill_vert(char ch, int col)
 {
-    int y, x;
+    int y, x, i;
     UNUSED(y);
-    int i;
 
     getmaxyx(stdscr, y, x);
     for (i = 0; i < x; i++) {
@@ -51,15 +49,16 @@ void draw_content(char* buf, int y, int x)
 
 void print_up_to(char* buf, int y, int x, size_t max)
 {
+    size_t copy_this_much;
     /* Allocate enough bytes for max + null terminator */
     char* print_buf = malloc(max + 1);
-    /* Make sure it's null terminated */
+    size_t src_len = strlen(buf);
+
+    /* Make sure print buffer is null terminated */
     memset(print_buf, 0, max + 1);
+
     /* If source is larger than max, we only want to copy */
     /* max - 3 bytes, as the last 3 characters will be `...` */
-    size_t src_len = strlen(buf);
-    size_t copy_this_much;
-
     if (src_len <= max) {
         copy_this_much = max;
     } else {
