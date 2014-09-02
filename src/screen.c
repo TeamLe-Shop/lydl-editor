@@ -38,6 +38,7 @@ void init_colors(void)
 void screen_render(void)
 {
     int max_x, max_y;
+    UNUSED(max_y);
     glob_t files;
     getmaxyx(stdscr, max_y, max_x);
 

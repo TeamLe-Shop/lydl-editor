@@ -9,6 +9,7 @@
 void fill(char ch, int row)
 {
     int y, x;
+    UNUSED(y);
     int i;
     char c[2];
 
@@ -24,6 +25,7 @@ void fill(char ch, int row)
 void fill_vert(char ch, int col)
 {
     int y, x;
+    UNUSED(y);
     int i;
 
     getmaxyx(stdscr, y, x);

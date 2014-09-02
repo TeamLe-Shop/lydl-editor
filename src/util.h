@@ -22,4 +22,6 @@ int is_dir(const char* path);
 
 void draw_content(char* buf, int y, int x);
 
+#define UNUSED(var) (void)(var)
+
 #endif /* UTIL_H */
