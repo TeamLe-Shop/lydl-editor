@@ -93,7 +93,7 @@ void screen_input(int ch)
         if (strlen(buffer) == buffer_len - 1) {
             buffer_len+=8;
             buffer = realloc(buffer, buffer_len);
-            memset(buffer + buffer_len, 0, 8);
+            memset(buffer + buffer_len - 8, 0, 8);
         }
         buffer[strlen(buffer)] = ch;
     }
