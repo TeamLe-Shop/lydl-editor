@@ -85,7 +85,8 @@ void screen_render(void)
 
 void screen_input(int ch)
 {
-    if (ch == 127) {
+    // TODO: is 127 really necessary?
+    if (ch == 127 || ch == KEY_BACKSPACE) {
         if (strlen(buffer) > 0) {
             buffer[strlen(buffer) - 1] = 0;
             buffer_len--;
