@@ -1,15 +1,17 @@
 OBJECTS=main.o screen.o util.o
 EXECUTABLE=lydl
+FLAGS=-std=c99 # If your compiler is from the 80s, you can use -std=c99.
+			   # The code should be compatible with -std=89.
 
 all: $(OBJECTS)
-	cc $(OBJECTS) -lncurses -o $(EXECUTABLE)
+	cc $(OBJECTS) $(FLAGS) -lncurses -o $(EXECUTABLE)
 	rm $(OBJECTS)
 
 main.o: src/main.c screen.o
-	cc -c src/main.c
+	cc -c $(FLAGS) src/main.c
 
 screen.o: src/screen.c util.o
-	cc -c src/screen.c
+	cc -c $(FLAGS) src/screen.c
 
 util.o: src/util.c screen.o
-	cc -c src/util.c
+	cc -c $(FLAGS) src/util.c

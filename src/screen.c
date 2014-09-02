@@ -38,6 +38,7 @@ void init_colors(void)
 void screen_render(void)
 {
     int max_x, max_y;
+    size_t file;
     UNUSED(max_y);
     glob_t files;
     getmaxyx(stdscr, max_y, max_x);
@@ -54,7 +55,7 @@ void screen_render(void)
 
     attron(FILE_COLOR);
       switch (glob("*", 0, NULL, &files)) {
-      case 0: // Successful
+      case 0: /* Successful */
           break;
       case GLOB_NOSPACE:
           printf("Ran out of memory while listing files.\n");
@@ -68,7 +69,7 @@ void screen_render(void)
       default: break;
       }
 
-      for (size_t file = 0; file < files.gl_pathc; file++) {
+      for (file = 0; file < files.gl_pathc; file++) {
           if (is_dir(files.gl_pathv[file])) attron(A_BOLD);
           print_up_to(files.gl_pathv[file], 1 + file, 0, 13);
           attroff(A_BOLD);
@@ -85,7 +86,7 @@ void screen_render(void)
 
 void screen_input(int ch)
 {
-    // TODO: is 127 really necessary?
+    /* TODO: is 127 really necessary? */
     if (ch == 127 || ch == KEY_BACKSPACE) {
         if (strlen(buffer) > 0) {
             buffer[strlen(buffer) - 1] = 0;

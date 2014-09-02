@@ -37,7 +37,8 @@ void fill_vert(char ch, int col)
 void draw_content(char* buf, int y, int x)
 {
     int x_pos = x, y_pos = y;
-    for (size_t i = 0; i < strlen(buf); i++) {
+    size_t i;
+    for (i = 0; i < strlen(buf); i++) {
         if (buf[i] == '\n') {
             y_pos++;
             x_pos = x;
@@ -50,12 +51,12 @@ void draw_content(char* buf, int y, int x)
 
 void print_up_to(char* buf, int y, int x, size_t max)
 {
-    // Allocate enough bytes for max + null terminator
+    /* Allocate enough bytes for max + null terminator */
     char* print_buf = malloc(max + 1);
-    // Make sure it's null terminated
+    /* Make sure it's null terminated */
     memset(print_buf, 0, max + 1);
-    // If source is larger than max, we only want to copy
-    // max - 3 bytes, as the last 3 characters will be `...`
+    /* If source is larger than max, we only want to copy */
+    /* max - 3 bytes, as the last 3 characters will be `...` */
     size_t src_len = strlen(buf);
     size_t copy_this_much;
 
