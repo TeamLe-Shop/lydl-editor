@@ -37,7 +37,6 @@ void init_colors(void)
 void screen_render(void)
 {
     int max_x, max_y;
-    int file;
     glob_t files;
     getmaxyx(stdscr, max_y, max_x);
 
@@ -67,7 +66,7 @@ void screen_render(void)
       default: break;
       }
 
-      for (file = 0; file < files.gl_pathc; file++) {
+      for (size_t file = 0; file < files.gl_pathc; file++) {
           if (is_dir(files.gl_pathv[file])) attron(A_BOLD);
           print_limitto(files.gl_pathv[file], 1 + file, 0, 9);
           attroff(A_BOLD);

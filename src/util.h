@@ -1,6 +1,8 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+#include <stddef.h>
+
 /* Fill a row on the screen. */
 void fill(char ch, int row);
 
@@ -14,6 +16,10 @@ void draw_contents(char* buf, int y, int x);
  * elipses if it is > the limit.
  */
 
-void print_limitto(char* buf, int y, int x, int limit);
+void print_limitto(char* buf, int y, int x, size_t limit);
+
+int is_dir(const char* path);
+
+void draw_content(char* buf, int y, int x);
 
 #endif /* UTIL_H */

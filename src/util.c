@@ -34,9 +34,8 @@ void fill_vert(char ch, int col)
 
 void draw_content(char* buf, int y, int x)
 {
-    int i;
     int x_pos = x, y_pos = y;
-    for (i = 0; i < strlen(buf); i++) {
+    for (size_t i = 0; i < strlen(buf); i++) {
         if (buf[i] == '\n') {
             y_pos++;
             x_pos = x;
@@ -47,7 +46,7 @@ void draw_content(char* buf, int y, int x)
     }
 }
 
-void print_limitto(char* buf, int y, int x, int limit)
+void print_limitto(char* buf, int y, int x, size_t limit)
 {
     char* temp = malloc(strlen(buf));
 
