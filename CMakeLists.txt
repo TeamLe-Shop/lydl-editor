@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.0.0)
+project(lydl-editor)
+add_compile_options(-std=c99 -pedantic -Wall -Wextra)
+file(GLOB_RECURSE SOURCE_FILES src/*.c src/*.h)
+add_executable(lydl ${SOURCE_FILES})
+target_link_libraries(lydl ncurses)
