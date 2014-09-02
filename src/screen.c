@@ -70,7 +70,7 @@ void screen_render(void)
 
       for (size_t file = 0; file < files.gl_pathc; file++) {
           if (is_dir(files.gl_pathv[file])) attron(A_BOLD);
-          print_limitto(files.gl_pathv[file], 1 + file, 0, 9);
+          print_up_to(files.gl_pathv[file], 1 + file, 0, 13);
           attroff(A_BOLD);
       }
 

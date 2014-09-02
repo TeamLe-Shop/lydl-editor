@@ -48,20 +48,32 @@ void draw_content(char* buf, int y, int x)
     }
 }
 
-void print_limitto(char* buf, int y, int x, size_t limit)
+void print_up_to(char* buf, int y, int x, size_t max)
 {
-    char* temp = malloc(strlen(buf) + 1);
+    // Allocate enough bytes for max + null terminator
+    char* print_buf = malloc(max + 1);
+    // Make sure it's null terminated
+    memset(print_buf, 0, max + 1);
+    // If source is larger than max, we only want to copy
+    // max - 3 bytes, as the last 3 characters will be `...`
+    size_t src_len = strlen(buf);
+    size_t copy_this_much;
 
-    strcpy(temp, buf);
+    if (src_len <= max) {
+        copy_this_much = max;
+    } else {
+        copy_this_much = max - 3;
+    }
+    strncpy(print_buf, buf, copy_this_much);
+    mvprintw(y, x, "%s", print_buf);
 
-    mvprintw(y, x, "%s", temp);
-    if (strlen(temp) > limit) {
+    if (src_len > max) {
         attron(A_BOLD);
-        mvprintw(y, x + strlen(temp) - 2, "...");
+        mvprintw(y, x + copy_this_much, "...");
         attroff(A_BOLD);
     }
 
-    free(temp);
+    free(print_buf);
 }
 
 int is_dir(const char* path)
