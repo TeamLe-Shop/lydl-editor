@@ -40,6 +40,8 @@ void draw_content(char* buf, int y, int x)
         if (buf[i] == '\n') {
             y_pos++;
             x_pos = x;
+            /* Force the cursor to appear on empty lines */
+            mvprintw(y_pos, x_pos + 1, "");
         } else {
             x_pos++;
             mvprintw(y_pos, x_pos, "%c", buf[i]);
