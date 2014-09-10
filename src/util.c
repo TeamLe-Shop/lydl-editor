@@ -32,19 +32,19 @@ void fill_vert(char ch, int col)
     }
 }
 
-void draw_content(char* buf, int y, int x)
+void draw_content(buffer_t* buf, int y, int x)
 {
     int x_pos = x, y_pos = y;
     size_t i;
-    for (i = 0; i < strlen(buf); i++) {
-        if (buf[i] == '\n') {
+    for (i = 0; i < buf->end_pos; i++) {
+        if (buf->data[i] == '\n') {
             y_pos++;
             x_pos = x;
             /* Force the cursor to appear on empty lines */
             mvprintw(y_pos, x_pos + 1, "");
         } else {
             x_pos++;
-            mvprintw(y_pos, x_pos, "%c", buf[i]);
+            mvprintw(y_pos, x_pos, "%c", buf->data[i]);
         }
     }
 }

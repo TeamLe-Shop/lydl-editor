@@ -2,6 +2,7 @@
 #define UTIL_H
 
 #include <stddef.h>
+#include "buffer.h"
 
 /* Fill a row on the screen. */
 void fill(char ch, int row);
@@ -21,7 +22,7 @@ void print_up_to(char* buf, int y, int x, size_t max);
 
 int is_dir(const char* path);
 
-void draw_content(char* buf, int y, int x);
+void draw_content(buffer_t *buf, int y, int x);
 
 #define UNUSED(var) (void)(var)
 

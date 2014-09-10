@@ -1,14 +1,13 @@
 #include "screen.h"
 #include "util.h"
+#include "buffer.h"
 
 #include <curses.h>
 #include <stdlib.h>
 #include <string.h>
 #include <glob.h>
 
-char* buffer;
-size_t buffer_len = 32;
-size_t cursor_pos;
+buffer_t* current_buffer;
 
 void screen_init(void)
 {
@@ -23,9 +22,7 @@ void screen_init(void)
     init_colors();
 
     keypad(stdscr, TRUE);
-
-    buffer = malloc(32);
-    memset(buffer, 0, 32);
+    current_buffer = buffer_create();
 }
 
 void init_colors(void)
@@ -89,29 +86,20 @@ void screen_render(void)
 
     /* Set the cursor pos to inside the editor. */
     move(1, 15);
-    draw_content(buffer, 1, 14);
+    draw_content(current_buffer, 1, 14);
 }
 
 void screen_input(int ch)
 {
-    /* TODO: is 127 really necessary? */
-    if (ch == 127 || ch == KEY_BACKSPACE) {
-        if (strlen(buffer) > 0) {
-            buffer[strlen(buffer) - 1] = 0;
-            buffer_len--;
-        }
+    if (ch == KEY_BACKSPACE) {
+        buffer_erase(current_buffer, current_buffer->end_pos);
     } else {
-        if (strlen(buffer) == buffer_len - 1) {
-            buffer_len+=8;
-            buffer = realloc(buffer, buffer_len);
-            memset(buffer + buffer_len - 8, 0, 8);
-        }
-        buffer[strlen(buffer)] = ch;
+        buffer_insert_char(current_buffer, ch, current_buffer->end_pos);
     }
 }
 
 void screen_destroy(void)
 {
-    free(buffer);
+    buffer_free(current_buffer);
     endwin();
 }
