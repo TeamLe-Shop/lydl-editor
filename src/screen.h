@@ -3,7 +3,7 @@
 
 #define BLACK_WHITE COLOR_PAIR(1)
 #define FILE_COLOR COLOR_PAIR(2)
-#define ELLIPSIS_COLOR COLOR_PAIR(3)
+#define DIR_COLOR COLOR_PAIR(3)
 
 /* Initialize curses */
 void screen_init(void);

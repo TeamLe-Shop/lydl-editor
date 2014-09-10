@@ -31,8 +31,8 @@ void screen_init(void)
 void init_colors(void)
 {
     init_pair(1, COLOR_BLACK, COLOR_WHITE);
-    init_pair(2, COLOR_YELLOW, COLOR_BLACK);
-    init_pair(3, COLOR_WHITE, COLOR_BLACK);
+    init_pair(2, COLOR_WHITE, COLOR_BLACK);
+    init_pair(3, COLOR_BLUE, COLOR_BLACK);
 }
 
 void screen_render(void)
@@ -70,9 +70,17 @@ void screen_render(void)
       }
 
       for (file = 0; file < files.gl_pathc; file++) {
-          if (is_dir(files.gl_pathv[file])) attron(A_BOLD);
+          if (is_dir(files.gl_pathv[file])) {
+            attroff(FILE_COLOR);
+            attron(DIR_COLOR);
+            attron(A_BOLD);
+          }
           print_up_to(files.gl_pathv[file], 1 + file, 0, 13);
-          attroff(A_BOLD);
+          if (is_dir(files.gl_pathv[file])) {
+            attroff(DIR_COLOR);
+            attroff(A_BOLD);
+            attron(FILE_COLOR);
+          }
       }
 
       globfree(&files);
