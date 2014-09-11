@@ -13,8 +13,7 @@ int main(int argc, char** argv)
     while (1) {
         erase();
         screen_render();
-
-        ch = getch();
+        get_wch(&ch);
         screen_input(ch);
     }
     return 0;

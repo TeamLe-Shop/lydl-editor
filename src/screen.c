@@ -100,9 +100,7 @@ void screen_input(int ch)
         buffer_erase(current_buffer, current_buffer->end_pos);
         break;
     default:
-        if (isprint(ch) || isspace(ch)) {
-            buffer_insert_char(current_buffer, ch, current_buffer->end_pos);
-        }
+        buffer_insert_char(current_buffer, ch, current_buffer->end_pos);
     }
 }
 

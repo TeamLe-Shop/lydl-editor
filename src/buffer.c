@@ -40,15 +40,22 @@ void buffer_erase(buffer_t *buf, size_t pos)
     }
 }
 
-
-void buffer_insert_char(buffer_t *buf, char ch, size_t pos)
-{
-    assert(pos <= buf->end_pos);
-    if (buf->end_pos >= buf->capacity) {
-            buffer_expand(buf);
+void buffer_insert(buffer_t* buf, char* src, size_t len, size_t pos) {
+    while (buf->end_pos + len >= buf->capacity) {
+        buffer_expand(buf);
     }
-    buf->data[pos] = ch;
-    buf->end_pos++;
+    memcpy(buf->data + pos, src, len);
+    buf->end_pos += len;
+}
+
+void buffer_insert_char(buffer_t* buf, int ch, size_t pos)
+{
+    int len;
+    char* mb = malloc(MB_CUR_MAX);
+    len = wctomb(mb, ch);
+    assert(len > 0);
+    buffer_insert(buf, mb, len, pos);
+    free(mb);
 }
 
 
