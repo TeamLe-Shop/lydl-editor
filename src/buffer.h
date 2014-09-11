@@ -4,6 +4,7 @@
 #include <stddef.h>
 
 typedef struct {
+    char* name;
     char* data;
     size_t capacity;
     size_t cursor_pos;
@@ -11,7 +12,7 @@ typedef struct {
 } buffer_t;
 
 /* Create a new buffer */
-buffer_t* buffer_create();
+buffer_t* buffer_create(char* name);
 
 /* Free a buffer */
 void buffer_free(buffer_t* buf);

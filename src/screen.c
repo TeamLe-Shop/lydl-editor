@@ -23,7 +23,7 @@ void screen_init(int argc, char** argv)
     init_colors();
 
     keypad(stdscr, TRUE);
-    current_buffer = buffer_create();
+    current_buffer = buffer_create("untitled");
     if (argc > 1) {
         buffer_load_from_file(current_buffer, argv[1]);
     }
@@ -51,7 +51,7 @@ void screen_render(void)
       mvprintw(0, 3, "Files");
 
       fill_vert(' ', 14);
-      mvprintw(0, (max_x / 2) + 7, "untitled");
+      mvprintw(0, (max_x / 2) + 7, current_buffer->name);
     attroff(BLACK_WHITE);
 
     attron(FILE_COLOR);

@@ -7,9 +7,11 @@
 
 size_t const INITIAL_BUFFER_SIZE = 8;
 
-buffer_t *buffer_create()
+buffer_t *buffer_create(char* name)
 {
     buffer_t* buf = malloc(sizeof(buffer_t));
+    buf->name = malloc(strlen(name));
+    strncpy(buf->name, name, strlen(name));
     buf->data = malloc(INITIAL_BUFFER_SIZE);
     buf->capacity = INITIAL_BUFFER_SIZE;
     memset(buf->data, 0, buf->capacity);
@@ -20,6 +22,7 @@ buffer_t *buffer_create()
 void buffer_free(buffer_t* buf)
 {
     free(buf->data);
+    free(buf->name);
     free(buf);
 }
 
@@ -71,6 +74,7 @@ void buffer_insert_char(buffer_t* buf, int ch, size_t pos)
 {
     int len;
     char* mb = malloc(MB_CUR_MAX);
+
     len = wctomb(mb, ch);
     assert(len > 0);
     buffer_insert(buf, mb, len, pos);
@@ -82,6 +86,7 @@ void buffer_load_from_file(buffer_t* buf, const char* filename)
 {
     FILE* f;
     long len;
+
     f = fopen(filename, "r");
     fseek(f, 0, SEEK_END);
     len = ftell(f);
@@ -90,5 +95,7 @@ void buffer_load_from_file(buffer_t* buf, const char* filename)
     fread(buf->data, 1, len, f);
     buf->end_pos = len;
     buf->capacity = len;
+    buf->name = realloc(buf->name, strlen(filename));
+    strncpy(buf->name, filename, strlen(filename));
     fclose(f);
 }
