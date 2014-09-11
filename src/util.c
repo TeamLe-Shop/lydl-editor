@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 #include "screen.h"
+#include <assert.h>
 
 void fill(char ch, int row)
 {
@@ -36,15 +37,21 @@ void draw_content(buffer_t* buf, int y, int x)
 {
     int x_pos = x, y_pos = y;
     size_t i;
-    for (i = 0; i < buf->end_pos; i++) {
+    for (i = 0; i < buf->end_pos;) {
         if (buf->data[i] == '\n') {
             y_pos++;
             x_pos = x;
             /* Force the cursor to appear on empty lines */
             mvprintw(y_pos, x_pos + 1, "");
+            i++;
         } else {
+            wchar_t wc;
+            int len;
             x_pos++;
-            mvprintw(y_pos, x_pos, "%c", buf->data[i]);
+            len = mbtowc(&wc, buf->data + i, buf->capacity - i);
+            assert(len > 0);
+            mvprintw(y_pos, x_pos, "%C", wc);
+            i += len;
         }
     }
 }

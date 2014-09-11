@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <curses.h>
 #include "screen.h"
+#include <locale.h>
 
 int main(int argc, char** argv)
 {
     int ch;
 
+    setlocale(LC_CTYPE, "");
     screen_init(argc, argv);
 
     while (1) {
