@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 size_t const INITIAL_BUFFER_SIZE = 8;
 
@@ -39,9 +40,10 @@ void buffer_erase(buffer_t *buf, size_t pos)
 
 void buffer_insert_char(buffer_t *buf, char ch, size_t pos)
 {
-    if (strlen(buf->data) == buf->capacity - 1) {
+    assert(pos <= buf->end_pos);
+    buf->data[pos] = ch;
+    buf->end_pos++;
+    if (buf->end_pos >= buf->capacity) {
         buffer_expand(buf);
     }
-    buf->data[buf->end_pos] = ch;
-    buf->end_pos++;
 }
