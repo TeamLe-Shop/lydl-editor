@@ -34,10 +34,29 @@ void buffer_expand(buffer_t* buf)
 
 void buffer_erase(buffer_t *buf, size_t pos)
 {
-    /* TODO: Right now just ignores `pos`, and just decreases end_pos */
-    if (buf->end_pos > 0) {
-        buf->end_pos--;
+    /* TODO: Right now just decreases end_pos, doesn't delete right char */
+    int len;
+    int i;
+
+    if (buf->end_pos == 0) {
+        return;
     }
+
+    assert(pos <= buf->end_pos);
+
+    /* Seek back until we find a valid multibyte char */
+    for (i = 0; i < buf->data - (buf->data - pos); i++) {
+        size_t max;
+        max = buf->end_pos - (pos + i);
+        len = mblen(buf->data + (pos - i), max);
+        /* Reset shift state or wit (read man mblen) */
+        mblen(NULL, 0);
+        if (len > 0) {
+            break;
+        }
+    }
+
+    buf->end_pos -= len;
 }
 
 void buffer_insert(buffer_t* buf, char* src, size_t len, size_t pos) {
