@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <stdio.h>
 
 size_t const INITIAL_BUFFER_SIZE = 8;
 
@@ -43,9 +44,25 @@ void buffer_erase(buffer_t *buf, size_t pos)
 void buffer_insert_char(buffer_t *buf, char ch, size_t pos)
 {
     assert(pos <= buf->end_pos);
+    if (buf->end_pos >= buf->capacity) {
+            buffer_expand(buf);
+    }
     buf->data[pos] = ch;
     buf->end_pos++;
-    if (buf->end_pos >= buf->capacity) {
-        buffer_expand(buf);
-    }
+}
+
+
+void buffer_load_from_file(buffer_t* buf, const char* filename)
+{
+    FILE* f;
+    long len;
+    f = fopen(filename, "r");
+    fseek(f, 0, SEEK_END);
+    len = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    buf->data = realloc(buf->data, len);
+    fread(buf->data, 1, len, f);
+    buf->end_pos = len;
+    buf->capacity = len;
+    fclose(f);
 }

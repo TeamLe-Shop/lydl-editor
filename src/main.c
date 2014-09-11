@@ -2,11 +2,11 @@
 #include <curses.h>
 #include "screen.h"
 
-int main(void)
+int main(int argc, char** argv)
 {
     int ch;
 
-    screen_init();
+    screen_init(argc, argv);
 
     while (1) {
         erase();

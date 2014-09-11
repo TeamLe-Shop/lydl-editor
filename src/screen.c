@@ -10,7 +10,7 @@
 
 buffer_t* current_buffer;
 
-void screen_init(void)
+void screen_init(int argc, char** argv)
 {
     initscr();
     if (!has_colors())
@@ -24,6 +24,9 @@ void screen_init(void)
 
     keypad(stdscr, TRUE);
     current_buffer = buffer_create();
+    if (argc > 1) {
+        buffer_load_from_file(current_buffer, argv[1]);
+    }
 }
 
 void init_colors(void)

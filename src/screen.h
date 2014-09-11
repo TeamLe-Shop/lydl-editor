@@ -6,7 +6,7 @@
 #define DIR_COLOR COLOR_PAIR(3)
 
 /* Initialize curses */
-void screen_init(void);
+void screen_init(int argc, char** argv);
 
 /* Draw the content. */
 void screen_render(void);

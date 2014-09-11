@@ -25,4 +25,7 @@ void buffer_erase(buffer_t* buf, size_t pos);
 /* Insert character `ch` at position `pos` */
 void buffer_insert_char(buffer_t* buf, char ch, size_t pos);
 
+/* Load file contents into buffer */
+void buffer_load_from_file(buffer_t* buf, const char* filename);
+
 #endif  /* BUFFER_H */
