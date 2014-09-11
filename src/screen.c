@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <glob.h>
+#include <ctype.h>
 
 buffer_t* current_buffer;
 
@@ -91,10 +92,14 @@ void screen_render(void)
 
 void screen_input(int ch)
 {
-    if (ch == KEY_BACKSPACE) {
+    switch (ch) {
+    case KEY_BACKSPACE:
         buffer_erase(current_buffer, current_buffer->end_pos);
-    } else {
-        buffer_insert_char(current_buffer, ch, current_buffer->end_pos);
+        break;
+    default:
+        if (isprint(ch) || isspace(ch)) {
+            buffer_insert_char(current_buffer, ch, current_buffer->end_pos);
+        }
     }
 }
 
