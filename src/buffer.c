@@ -34,7 +34,9 @@ void buffer_expand(buffer_t* buf)
 void buffer_erase(buffer_t *buf, size_t pos)
 {
     /* TODO: Right now just ignores `pos`, and just decreases end_pos */
-    buf->end_pos--;
+    if (buf->end_pos > 0) {
+        buf->end_pos--;
+    }
 }
 
 
