@@ -72,15 +72,15 @@ void screen_render(void)
 
       for (file = 0; file < files.gl_pathc; file++) {
           if (is_dir(files.gl_pathv[file])) {
-            attroff(FILE_COLOR);
-            attron(DIR_COLOR);
-            attron(A_BOLD);
+              attroff(FILE_COLOR);
+              attron(DIR_COLOR);
+              attron(A_BOLD);
           }
           print_up_to(files.gl_pathv[file], 1 + file, 0, 13);
           if (is_dir(files.gl_pathv[file])) {
-            attroff(DIR_COLOR);
-            attroff(A_BOLD);
-            attron(FILE_COLOR);
+              attroff(DIR_COLOR);
+              attroff(A_BOLD);
+              attron(FILE_COLOR);
           }
       }
 
@@ -97,6 +97,9 @@ void screen_input(int ch)
 {
     switch (ch) {
     case KEY_BACKSPACE:
+    case 127: /* NOTE: For some reason, this doesn't work
+               * properly on gatsan's machine. pls discuss
+               */
         buffer_erase(current_buffer, current_buffer->end_pos);
         break;
     default:

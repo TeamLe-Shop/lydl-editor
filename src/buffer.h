@@ -2,6 +2,7 @@
 #define BUFFER_H
 
 #include <stddef.h>
+#include <stdbool.h>
 
 typedef struct {
     char* name;
@@ -9,6 +10,11 @@ typedef struct {
     size_t capacity;
     size_t cursor_pos;
     size_t end_pos;
+
+    /* Whether the buffer contents have been
+     * modified since it was loaded
+     */
+    bool modified;
 } buffer_t;
 
 /* Create a new buffer */

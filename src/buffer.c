@@ -88,6 +88,13 @@ void buffer_load_from_file(buffer_t* buf, const char* filename)
     long len;
 
     f = fopen(filename, "r");
+    if (!f) {
+        buf->name = realloc(buf->name, strlen(filename));
+        memset(buf->name, 0, strlen(buf->name));
+        strncpy(buf->name, filename, strlen(filename));
+        strcat(buf->name, " (NEW)");
+        return;
+    }
     fseek(f, 0, SEEK_END);
     len = ftell(f);
     fseek(f, 0, SEEK_SET);
