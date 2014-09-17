@@ -38,7 +38,7 @@ void buffer_expand(buffer_t* buf)
 void buffer_erase(buffer_t *buf, size_t pos)
 {
     /* TODO: Right now just decreases end_pos, doesn't delete right char */
-    int len;
+    int len = -1;
     int i;
 
     if (buf->end_pos == 0) {
@@ -60,6 +60,8 @@ void buffer_erase(buffer_t *buf, size_t pos)
             break;
         }
     }
+
+    assert(len > -1);
 
     buf->end_pos -= len;
     buf->cursor_pos -= len;
