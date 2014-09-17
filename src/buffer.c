@@ -16,6 +16,7 @@ buffer_t *buffer_create(char* name)
     buf->capacity = INITIAL_BUFFER_SIZE;
     memset(buf->data, 0, buf->capacity);
     buf->end_pos = 0;
+    buf->cursor_pos= 0;
     return buf;
 }
 
