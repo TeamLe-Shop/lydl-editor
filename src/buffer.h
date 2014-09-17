@@ -12,7 +12,7 @@ typedef struct {
     size_t end_pos;
 
     /* Whether the buffer contents have been
-     * modified since it was loaded
+     * modified since it was loaded/saved
      */
     bool modified;
 } buffer_t;

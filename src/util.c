@@ -37,6 +37,7 @@ void draw_content(buffer_t* buf, int y, int x)
 {
     int x_pos = x, y_pos = y;
     size_t i;
+
     for (i = 0; i < buf->end_pos;) {
         if (buf->data[i] == '\n') {
             y_pos++;
@@ -50,8 +51,15 @@ void draw_content(buffer_t* buf, int y, int x)
             x_pos++;
             len = mbtowc(&wc, buf->data + i, buf->capacity - i);
             assert(len > 0);
+            if (buf->data[i] == '/' && buf->data[i+1] == '*')
+                attron(DIR_COLOR);
             mvprintw(y_pos, x_pos, "%C", wc);
+             if (buf->data[i] == '/' && buf->data[i-1] == '*')
+                attroff(DIR_COLOR);
             i += len;
+        }
+        if (buf->cursor_pos == i) {
+            move(y_pos, x_pos + 1);
         }
     }
 }

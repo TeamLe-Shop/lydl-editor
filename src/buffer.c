@@ -45,6 +45,8 @@ void buffer_erase(buffer_t *buf, size_t pos)
         return;
     }
 
+    buf->modified = true;
+
     assert(pos <= buf->end_pos);
 
     /* Seek back until we find a valid multibyte char */
@@ -60,14 +62,17 @@ void buffer_erase(buffer_t *buf, size_t pos)
     }
 
     buf->end_pos -= len;
+    buf->cursor_pos -= len;
 }
 
 void buffer_insert(buffer_t* buf, char* src, size_t len, size_t pos) {
+    buf->modified = true;
     while (buf->end_pos + len >= buf->capacity) {
         buffer_expand(buf);
     }
     memcpy(buf->data + pos, src, len);
     buf->end_pos += len;
+    buf->cursor_pos += len;
 }
 
 void buffer_insert_char(buffer_t* buf, int ch, size_t pos)

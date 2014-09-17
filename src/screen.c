@@ -1,6 +1,8 @@
 #include "screen.h"
 #include "util.h"
 #include "buffer.h"
+#include "constants.h"
+
 
 #include <curses.h>
 #include <stdlib.h>
@@ -41,7 +43,6 @@ void screen_render(void)
     int max_x, max_y;
     size_t file;
     glob_t files;
-    UNUSED(max_y);
     getmaxyx(stdscr, max_y, max_x);
 
     /* That's one beautiful UI. */
@@ -52,6 +53,9 @@ void screen_render(void)
 
       fill_vert(' ', 14);
       mvprintw(0, (max_x / 2) + 7, current_buffer->name);
+      fill(' ', max_y-1);
+      mvprintw(max_y-1, 15, "Cursor Pos: %zu  Buffer Len: %zu",
+               current_buffer->cursor_pos, current_buffer->end_pos);
     attroff(BLACK_WHITE);
 
     attron(FILE_COLOR);
@@ -96,11 +100,11 @@ void screen_render(void)
 void screen_input(int ch)
 {
     switch (ch) {
-    case KEY_BACKSPACE:
-    case 127: /* NOTE: For some reason, this doesn't work
-               * properly on gatsan's machine. pls discuss
-               */
+    case CKEY_BACKSPACE:
         buffer_erase(current_buffer, current_buffer->end_pos);
+        break;
+    case KEY_LEFT:
+        current_buffer->cursor_pos--;
         break;
     default:
         buffer_insert_char(current_buffer, ch, current_buffer->end_pos);
