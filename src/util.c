@@ -54,7 +54,7 @@ void draw_content(buffer_t* buf, int y, int x)
             if (buf->data[i] == '/' && buf->data[i+1] == '*')
                 attron(DIR_COLOR);
             mvprintw(y_pos, x_pos, "%C", wc);
-             if (buf->data[i] == '/' && buf->data[i-1] == '*')
+             if (buf->data[i] == '/' && i > 0 && buf->data[i-1] == '*')
                 attroff(DIR_COLOR);
             i += len;
         }
