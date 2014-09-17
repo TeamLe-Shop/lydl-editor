@@ -51,7 +51,7 @@ void buffer_erase(buffer_t *buf, size_t pos)
     assert(pos <= buf->end_pos);
 
     /* Seek back until we find a valid multibyte char */
-    for (i = 0; i < buf->data - (buf->data - pos); i++) {
+    for (i = 0; i < (buf->data - (buf->data - pos)) + 1; i++) {
         size_t max;
         max = buf->end_pos - (pos + i);
         len = mblen(buf->data + (pos - i), max);
