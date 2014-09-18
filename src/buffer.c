@@ -55,8 +55,6 @@ void buffer_erase(buffer_t *buf, size_t pos)
         size_t max;
         max = buf->end_pos - (pos + i);
         len = mblen(buf->data + (pos - i), max);
-        /* Reset shift state or wit (read man mblen) */
-        mblen(NULL, 0);
         if (len > 0) {
             break;
         }
