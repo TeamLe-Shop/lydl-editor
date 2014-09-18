@@ -10,8 +10,8 @@ size_t const INITIAL_BUFFER_SIZE = 8;
 buffer_t *buffer_create(char* name)
 {
     buffer_t* buf = malloc(sizeof(buffer_t));
-    buf->name = malloc(strlen(name));
-    strncpy(buf->name, name, strlen(name));
+    buf->name = malloc(strlen(name) + 1);
+    strncpy(buf->name, name, strlen(name) + 1);
     buf->data = malloc(INITIAL_BUFFER_SIZE);
     buf->capacity = INITIAL_BUFFER_SIZE;
     memset(buf->data, 0, buf->capacity);
