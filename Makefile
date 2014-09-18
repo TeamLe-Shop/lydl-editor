@@ -1,4 +1,4 @@
-OBJECTS=main.o screen.o util.o
+OBJECTS=main.o screen.o util.o buffer.o
 EXECUTABLE=lydl
 FLAGS=-std=c99 # If your compiler is from the 80s, you can use -std=c99.
 			   # The code should be compatible with -std=89.
@@ -15,3 +15,7 @@ screen.o: src/screen.c util.o
 
 util.o: src/util.c screen.o
 	cc -c $(FLAGS) src/util.c
+
+buffer.o: src/buffer.c
+	cc -c $(FLAGS) src/buffer.c
+
