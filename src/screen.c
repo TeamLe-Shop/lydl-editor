@@ -3,7 +3,6 @@
 #include "buffer.h"
 #include "constants.h"
 
-
 #include <curses.h>
 #include <stdlib.h>
 #include <string.h>
@@ -40,6 +39,8 @@ void init_colors(void)
 
 void screen_render(void)
 {
+    unsigned int start_file = 0;
+    unsigned int end_file = start_file + 12;
     int max_x, max_y;
     size_t file;
     glob_t files;
@@ -49,7 +50,8 @@ void screen_render(void)
 
     attron(BLACK_WHITE);
       fill(' ', 0);
-      mvprintw(0, 3, "Files");
+      mvprintw(0, 5, "Files");
+      mvprintw(12, 0, "     Open     ");
 
       fill_vert(' ', 14);
       mvprintw(0, (max_x / 2) + 7, current_buffer->name);
@@ -74,7 +76,9 @@ void screen_render(void)
       default: break;
       }
 
-      for (file = 0; file < files.gl_pathc; file++) {
+      if (end_file > files.gl_pathc) end_file = files.gl_pathc;
+
+      for (file = start_file; file < end_file; file++) {
           if (is_dir(files.gl_pathv[file])) {
               attroff(FILE_COLOR);
               attron(DIR_COLOR);
@@ -87,6 +91,9 @@ void screen_render(void)
               attron(FILE_COLOR);
           }
       }
+
+      attron(FILE_COLOR);
+      print_up_to(current_buffer->name, 13, 0, 13);
 
       globfree(&files);
 

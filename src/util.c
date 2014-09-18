@@ -37,8 +37,10 @@ void draw_content(buffer_t* buf, int y, int x)
 {
     int x_pos = x, y_pos = y;
     size_t i;
+    bool in_quotes = false;
 
     for (i = 0; i < buf->end_pos_byte;) {
+
         if (buf->data[i] == '\n') {
             y_pos++;
             x_pos = x;
