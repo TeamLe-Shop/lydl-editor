@@ -89,6 +89,15 @@ void buffer_insert_char(buffer_t* buf, int ch, size_t pos)
     free(mb);
 }
 
+static void set_name_file_new(buffer_t* buf, const char* filename) {
+    const char* str = " (NEW)";
+    const size_t filename_len = strlen(filename);
+    const size_t new_size = filename_len + strlen(str) + 1;
+    buf->name = realloc(buf->name, new_size);
+    memset(buf->name, 0, new_size);
+    strncpy(buf->name, filename, filename_len + 1);
+    strncat(buf->name, " (NEW)", new_size);
+}
 
 void buffer_load_from_file(buffer_t* buf, const char* filename)
 {
@@ -97,10 +106,7 @@ void buffer_load_from_file(buffer_t* buf, const char* filename)
 
     f = fopen(filename, "r");
     if (!f) {
-        buf->name = realloc(buf->name, strlen(filename));
-        memset(buf->name, 0, strlen(buf->name));
-        strncpy(buf->name, filename, strlen(filename));
-        strcat(buf->name, " (NEW)");
+        set_name_file_new(buf, filename);
         return;
     }
     fseek(f, 0, SEEK_END);
