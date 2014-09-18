@@ -55,7 +55,7 @@ void screen_render(void)
       mvprintw(0, (max_x / 2) + 7, current_buffer->name);
       fill(' ', max_y-1);
       mvprintw(max_y-1, 15, "Cursor Pos: %zu  Buffer Len: %zu",
-               current_buffer->cursor_pos, current_buffer->end_pos);
+               current_buffer->cursor_pos_char, current_buffer->end_pos_char);
     attroff(BLACK_WHITE);
 
     attron(FILE_COLOR);
@@ -101,13 +101,14 @@ void screen_input(int ch)
 {
     switch (ch) {
     case CKEY_BACKSPACE:
-        buffer_erase(current_buffer, current_buffer->end_pos);
+        buffer_erase(current_buffer, current_buffer->end_pos_byte);
         break;
     case KEY_LEFT:
-        current_buffer->cursor_pos--;
+        /* TODO: We're lying here, the actual cursor doesn't move */
+        current_buffer->cursor_pos_char--;
         break;
     default:
-        buffer_insert_char(current_buffer, ch, current_buffer->end_pos);
+        buffer_insert_char(current_buffer, ch, current_buffer->end_pos_byte);
     }
 }
 

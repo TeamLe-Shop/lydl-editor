@@ -8,8 +8,12 @@ typedef struct {
     char* name;
     char* data;
     size_t capacity;
-    size_t cursor_pos;
-    size_t end_pos;
+    size_t cursor_pos_byte;
+    size_t end_pos_byte;
+    /* Cursor pos counting multibyte characters as one */
+    size_t cursor_pos_char;
+    /* End pos counting multibyte characters as one */
+    size_t end_pos_char;
 
     /* Whether the buffer contents have been
      * modified since it was loaded/saved

@@ -38,7 +38,7 @@ void draw_content(buffer_t* buf, int y, int x)
     int x_pos = x, y_pos = y;
     size_t i;
 
-    for (i = 0; i < buf->end_pos;) {
+    for (i = 0; i < buf->end_pos_byte;) {
         if (buf->data[i] == '\n') {
             y_pos++;
             x_pos = x;
@@ -58,7 +58,7 @@ void draw_content(buffer_t* buf, int y, int x)
                 attroff(DIR_COLOR);
             i += len;
         }
-        if (buf->cursor_pos == i) {
+        if (buf->cursor_pos_byte == i) {
             move(y_pos, x_pos + 1);
         }
     }
