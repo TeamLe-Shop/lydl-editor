@@ -143,7 +143,7 @@ void buffer_load_from_file(buffer_t* buf, const char* filename)
     buf->end_pos_char = mbstrlen(buf->data, len);
     buf->cursor_pos_char = buf->end_pos_char;
     buf->capacity = len;
-    buf->name = realloc(buf->name, strlen(filename));
-    strncpy(buf->name, filename, strlen(filename));
+    buf->name = realloc(buf->name, strlen(filename) + 1);
+    strncpy(buf->name, filename, strlen(filename) + 1);
     fclose(f);
 }
