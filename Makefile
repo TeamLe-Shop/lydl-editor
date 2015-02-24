@@ -1,6 +1,6 @@
 OBJECTS=main.o screen.o util.o buffer.o
 EXECUTABLE=lydl
-FLAGS=-std=c99 # If your compiler is from the 80s, you can use -std=c99.
+FLAGS=-std=c99 # If your compiler is from the 80s, you can use -std=c89.
 			   # The code should be compatible with -std=89.
 
 all: $(OBJECTS)

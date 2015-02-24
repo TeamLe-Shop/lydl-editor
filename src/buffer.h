@@ -21,6 +21,12 @@ typedef struct {
     bool modified;
 } buffer_t;
 
+typedef struct {
+    buffer_t** list;
+    size_t     count;
+    size_t     active;
+} buffer_list_t;
+
 /* Create a new buffer */
 buffer_t* buffer_create(char* name);
 
@@ -38,5 +44,15 @@ void buffer_insert_char(buffer_t* buf, int ch, size_t pos);
 
 /* Load file contents into buffer */
 void buffer_load_from_file(buffer_t* buf, const char* filename);
+
+
+/* Create a buffer list */
+buffer_list_t* buffer_list_create();
+
+/* Add a buffer to a buffer list */
+void buffer_list_add(buffer_list_t* buffer_list, buffer_t*);
+
+/* Free all buffers in a buffer list and free the list itself. */
+void buffer_list_free(buffer_list_t* list);
 
 #endif  /* BUFFER_H */

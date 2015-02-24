@@ -36,6 +36,7 @@ void fill_vert(char ch, int col)
 void draw_content(buffer_t* buf, int y, int x)
 {
     int x_pos = x, y_pos = y;
+    int cursor_x = x, cursor_y = y;
     size_t i;
     bool in_quotes = false;
 
@@ -53,17 +54,22 @@ void draw_content(buffer_t* buf, int y, int x)
             x_pos++;
             len = mbtowc(&wc, buf->data + i, buf->capacity - i);
             assert(len > 0);
-            if (buf->data[i] == '/' && buf->data[i+1] == '*')
+            if (buf->data[i] == '/' && buf->data[i+1] == '*') {
                 attron(DIR_COLOR);
+            }
             mvprintw(y_pos, x_pos, "%C", wc);
-             if (buf->data[i] == '/' && i > 0 && buf->data[i-1] == '*')
+            if (buf->data[i] == '/' && i > 0 && buf->data[i-1] == '*') {
                 attroff(DIR_COLOR);
+            }
             i += len;
         }
         if (buf->cursor_pos_byte == i) {
-            move(y_pos, x_pos + 1);
+            cursor_x = x_pos;
+            cursor_y = y_pos;
         }
     }
+
+    move(cursor_y, cursor_x + 1);
 }
 
 void print_up_to(char* buf, int y, int x, size_t max)

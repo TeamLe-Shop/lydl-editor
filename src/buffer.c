@@ -147,3 +147,29 @@ void buffer_load_from_file(buffer_t* buf, const char* filename)
     strncpy(buf->name, filename, strlen(filename) + 1);
     fclose(f);
 }
+
+buffer_list_t* buffer_list_create()
+{
+    buffer_list_t* list = malloc(sizeof(buffer_list_t));
+    list->list = malloc(sizeof(buffer_t*) * 1);
+    list->count = 0;
+    list->active = 0;
+    return list;
+}
+
+void buffer_list_add(buffer_list_t* list, buffer_t* buffer)
+{
+    list->count++;
+    list->list = realloc(list->list, sizeof(buffer_t*) * list->count);
+    list->list[list->count - 1] = buffer;
+}
+
+void buffer_list_free(buffer_list_t* list)
+{
+    int i;
+    for (i = 0; i < list->count; i++) {
+        buffer_free(list->list[i]);
+    }
+    free(list->list);
+    free(list);
+}

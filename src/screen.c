@@ -9,7 +9,9 @@
 #include <glob.h>
 #include <ctype.h>
 
-buffer_t* current_buffer;
+buffer_list_t* buffer_list;
+
+int editor_state = EDITOR;
 
 void screen_init(int argc, char** argv)
 {
@@ -24,10 +26,12 @@ void screen_init(int argc, char** argv)
     init_colors();
 
     keypad(stdscr, TRUE);
-    current_buffer = buffer_create("untitled");
+    buffer_t* start_buffer = buffer_create("untitled (NEW)");
     if (argc > 1) {
-        buffer_load_from_file(current_buffer, argv[1]);
+        buffer_load_from_file(start_buffer, argv[1]);
     }
+    buffer_list = buffer_list_create();
+    buffer_list_add(buffer_list, start_buffer);
 }
 
 void init_colors(void)
@@ -35,15 +39,19 @@ void init_colors(void)
     init_pair(1, COLOR_BLACK, COLOR_WHITE);
     init_pair(2, COLOR_WHITE, COLOR_BLACK);
     init_pair(3, COLOR_BLUE, COLOR_BLACK);
+    init_pair(4, COLOR_WHITE, COLOR_GREEN);
 }
 
 void screen_render(void)
 {
     unsigned int start_file = 0;
     unsigned int end_file = start_file + 12;
+    size_t i;
     int max_x, max_y;
     size_t file;
     glob_t files;
+    char open_string[14];
+    buffer_t* current_buffer = buffer_list->list[buffer_list->active];
     getmaxyx(stdscr, max_y, max_x);
 
     /* That's one beautiful UI. */
@@ -51,7 +59,8 @@ void screen_render(void)
     attron(BLACK_WHITE);
       fill(' ', 0);
       mvprintw(0, 5, "Files");
-      mvprintw(12, 0, "     Open     ");
+      sprintf(open_string, "Open (%zu)", buffer_list->count);
+      mvprintw(12, 0, "%-14s", open_string);
 
       fill_vert(' ', 14);
       mvprintw(0, (max_x / 2) + 7, current_buffer->name);
@@ -71,7 +80,6 @@ void screen_render(void)
           printf("Error while reading.\n");
           break;
       case GLOB_NOMATCH:
-          printf("No files found.\n");
           break;
       default: break;
       }
@@ -93,7 +101,20 @@ void screen_render(void)
       }
 
       attron(FILE_COLOR);
-      print_up_to(current_buffer->name, 13, 0, 13);
+     for (i = 0; i < buffer_list->count; i++) {
+          if (buffer_list->active == i) {
+              attroff(FILE_COLOR);
+              attron(A_BOLD);
+              attron(SELECTED_COLOR);
+          }
+          print_up_to(buffer_list->list[i]->name, 13 + i, 0, 14);
+          if (buffer_list->active == i) {
+              attroff(SELECTED_COLOR);
+              attroff(A_BOLD);
+              attron(FILE_COLOR);
+          }
+      }
+
 
       globfree(&files);
 
@@ -106,21 +127,45 @@ void screen_render(void)
 
 void screen_input(int ch)
 {
-    switch (ch) {
-    case CKEY_BACKSPACE:
-        buffer_erase(current_buffer, current_buffer->end_pos_byte);
-        break;
-    case KEY_LEFT:
-        /* TODO: We're lying here, the actual cursor doesn't move */
-        current_buffer->cursor_pos_char--;
-        break;
-    default:
-        buffer_insert_char(current_buffer, ch, current_buffer->end_pos_byte);
+    buffer_t* current_buffer = buffer_list->list[buffer_list->active];
+    if (editor_state == EDITOR) {
+        switch (ch) {
+        case CKEY_BACKSPACE:
+            buffer_erase(current_buffer, current_buffer->end_pos_byte);
+            break;
+        case KEY_LEFT:
+            if (current_buffer->cursor_pos_byte > 0) {
+                current_buffer->cursor_pos_byte--;
+            }
+            break;
+        case KEY_RIGHT:
+            if (current_buffer->cursor_pos_byte < current_buffer->end_pos_byte) {
+                current_buffer->cursor_pos_byte++;
+            }
+            break;
+        default:
+            buffer_insert_char(current_buffer, ch,
+                               current_buffer->end_pos_byte);
+        }
+
+    } else if (editor_state == BUFFERS) {
+        switch (ch) {
+        case KEY_UP:
+            if (buffer_list->active > 0) {
+                buffer_list->active--;
+            }
+            break;
+        case KEY_DOWN:
+            if (buffer_list->active > 0) {
+                buffer_list->active--;
+            }
+            break;
+        }
     }
 }
 
 void screen_destroy(void)
 {
-    buffer_free(current_buffer);
+    buffer_list_free(buffer_list);
     endwin();
 }
