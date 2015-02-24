@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(lydl-editor)
-add_compile_options(-std=c89 -pedantic -Wall -Wextra)
+add_definitions(-D_XOPEN_SOURCE_EXTENDED)
+add_compile_options(-std=c99 -pedantic-errors -Wall -Wextra)
 if(SANITIZE)
     add_compile_options(-fsanitize=${SANITIZE})
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=${SANITIZE}")

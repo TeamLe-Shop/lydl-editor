@@ -5,7 +5,7 @@
 
 int main(int argc, char** argv)
 {
-    int ch;
+    wint_t ch;
 
     setlocale(LC_CTYPE, "");
     screen_init(argc, argv);
