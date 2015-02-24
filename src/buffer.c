@@ -166,8 +166,7 @@ void buffer_list_add(buffer_list_t* list, buffer_t* buffer)
 
 void buffer_list_free(buffer_list_t* list)
 {
-    int i;
-    for (i = 0; i < list->count; i++) {
+    for (size_t i = 0; i < list->count; i++) {
         buffer_free(list->list[i]);
     }
     free(list->list);
