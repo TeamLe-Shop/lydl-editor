@@ -45,6 +45,8 @@ void buffer_insert_char(buffer_t* buf, int ch, size_t pos);
 /* Load file contents into buffer */
 void buffer_load_from_file(buffer_t* buf, const char* filename);
 
+void buffer_move_cursor_left(buffer_t* buffer);
+void buffer_move_cursor_right(buffer_t* buffer);
 
 /* Create a buffer list */
 buffer_list_t* buffer_list_create();

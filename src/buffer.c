@@ -148,6 +148,38 @@ void buffer_load_from_file(buffer_t* buf, const char* filename)
     fclose(f);
 }
 
+static size_t prev_valid_mbchar_offset(buffer_t* buf) {
+    // Keep going back until we find a valid multibyte char
+    // Return the byte offset of what we travelled
+    int offset = -1;
+    for (char * c = buf->data + (buf->cursor_pos_byte - 1); c >= buf->data; --c) {
+        if (mblen(c, buf->cursor_pos_byte) > 0) {
+            return offset;
+        }
+        offset--;
+    }
+    assert(false && "No valid multibyte char found!");
+}
+
+static size_t next_valid_mbchar_offset(buffer_t * buf) {
+    return mblen(buf->data + buf->cursor_pos_byte, buf->end_pos_byte);
+}
+
+void buffer_move_cursor_left(buffer_t* buffer)
+{
+    if (buffer->cursor_pos_char > 0) {
+        buffer->cursor_pos_char--;
+        buffer->cursor_pos_byte += prev_valid_mbchar_offset(buffer);
+    }
+}
+
+void buffer_move_cursor_right(buffer_t* buffer) {
+    if (buffer->cursor_pos_char < buffer->end_pos_char) {
+        buffer->cursor_pos_char++;
+        buffer->cursor_pos_byte += next_valid_mbchar_offset(buffer);
+    }
+}
+
 buffer_list_t* buffer_list_create()
 {
     buffer_list_t* list = malloc(sizeof(buffer_list_t));

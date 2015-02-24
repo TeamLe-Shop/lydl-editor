@@ -65,8 +65,10 @@ void screen_render(void)
       fill_vert(' ', 14);
       mvprintw(0, (max_x / 2) + 7, current_buffer->name);
       fill(' ', max_y-1);
-      mvprintw(max_y-1, 15, "Cursor Pos: %zu  Buffer Len: %zu",
-               current_buffer->cursor_pos_char, current_buffer->end_pos_char);
+      mvprintw(max_y-1, 15, "Cursor Pos: %zu Byte Pos: %zu  Buffer Len: %zu",
+               current_buffer->cursor_pos_char,
+               current_buffer->cursor_pos_byte,
+               current_buffer->end_pos_char);
     attroff(BLACK_WHITE);
 
     attron(FILE_COLOR);
@@ -134,14 +136,10 @@ void screen_input(int ch)
             buffer_erase(current_buffer, current_buffer->end_pos_byte);
             break;
         case KEY_LEFT:
-            if (current_buffer->cursor_pos_byte > 0) {
-                current_buffer->cursor_pos_byte--;
-            }
+            buffer_move_cursor_left(current_buffer);
             break;
         case KEY_RIGHT:
-            if (current_buffer->cursor_pos_byte < current_buffer->end_pos_byte) {
-                current_buffer->cursor_pos_byte++;
-            }
+            buffer_move_cursor_right(current_buffer);
             break;
         default:
             buffer_insert_char(current_buffer, ch,
