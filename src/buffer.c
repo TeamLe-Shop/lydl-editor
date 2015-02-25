@@ -38,7 +38,7 @@ void buffer_expand(buffer_t* buf)
 }
 
 
-void buffer_erase(buffer_t *buf, size_t pos)
+void buffer_erase_char(buffer_t *buf, size_t pos)
 {
     // TODO: Right now just decreases end_pos, doesn't delete right char
     int len = -1;
@@ -62,6 +62,11 @@ void buffer_erase(buffer_t *buf, size_t pos)
     }
 
     assert(len > -1);
+
+    // Move the rest of the buffer onto the erased region
+    memmove(buf->data + (buf->cursor_pos_byte - len),
+            buf->data + buf->cursor_pos_byte,
+            buf->end_pos_byte - buf->cursor_pos_byte);
 
     buf->end_pos_byte -= len;
     buf->cursor_pos_byte -= len;

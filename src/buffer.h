@@ -36,7 +36,7 @@ void buffer_free(buffer_t* buf);
 void buffer_expand(buffer_t* buf);
 
 // Erase character before position `pos`
-void buffer_erase(buffer_t* buf, size_t pos);
+void buffer_erase_char(buffer_t* buf, size_t pos);
 
 // Insert character `ch` at position `pos`
 void buffer_insert_char(buffer_t* buf, int ch, size_t pos);

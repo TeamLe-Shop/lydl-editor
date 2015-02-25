@@ -131,7 +131,7 @@ void screen_input(int ch)
     if (editor_state == EDITOR) {
         switch (ch) {
         case CKEY_BACKSPACE:
-            buffer_erase(current_buffer, current_buffer->end_pos_byte);
+            buffer_erase_char(current_buffer, current_buffer->cursor_pos_byte);
             break;
         case KEY_LEFT:
             buffer_move_cursor_left(current_buffer);
