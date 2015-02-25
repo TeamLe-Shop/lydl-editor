@@ -9,26 +9,23 @@
 
 void fill(char ch, int row)
 {
-    int y, x, i;
-    char c[2];
+    char c[2] = {ch, '\0'};
+    int y, x;
     UNUSED(y);
-
-    c[0] = ch;
-    c[1] = 0;
-
     getmaxyx(stdscr, y, x);
-    for (i = 0; i < x; i++) {
+
+    for (int i = 0; i < x; i++) {
         mvprintw(row, i, c);
     }
 }
 
 void fill_vert(char ch, int col)
 {
-    int y, x, i;
+    int y, x;
     UNUSED(y);
-
     getmaxyx(stdscr, y, x);
-    for (i = 0; i < x; i++) {
+
+    for (int i = 0; i < x; i++) {
         mvprintw(i, col, "%c", ch);
     }
 }
@@ -37,10 +34,9 @@ void draw_content(buffer_t* buf, int y, int x)
 {
     int x_pos = x, y_pos = y;
     int cursor_x = x, cursor_y = y;
-    size_t i;
     // bool in_quotes = false;
 
-    for (i = 0; i < buf->end_pos_byte;) {
+    for (size_t i = 0; i < buf->end_pos_byte;) {
 
         if (buf->data[i] == '\n') {
             y_pos++;
@@ -74,21 +70,22 @@ void draw_content(buffer_t* buf, int y, int x)
 
 void print_up_to(char* buf, int y, int x, size_t max)
 {
-    size_t copy_this_much;
-    // Allocate enough bytes for max + null terminator
-    char* print_buf = malloc(max + 1);
-    size_t src_len = strlen(buf);
-
-    // Make sure print buffer is null terminated
-    memset(print_buf, 0, max + 1);
-
     // If source is larger than max, we only want to copy
     // max - 3 bytes, as the last 3 characters will be `...`
+    size_t copy_this_much;
+    size_t src_len = strlen(buf);
+
     if (src_len <= max) {
         copy_this_much = max;
     } else {
         copy_this_much = max - 3;
     }
+
+    // Allocate enough bytes for max + null terminator
+    char* print_buf = malloc(max + 1);
+    // Make sure print buffer is null terminated
+    memset(print_buf, 0, max + 1);
+
     strncpy(print_buf, buf, copy_this_much);
     mvprintw(y, x, "%s", print_buf);
 

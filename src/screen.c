@@ -46,12 +46,9 @@ void screen_render(void)
 {
     unsigned int start_file = 0;
     unsigned int end_file = start_file + 12;
-    size_t i;
-    int max_x, max_y;
-    size_t file;
     glob_t files;
-    char open_string[14];
     buffer_t* current_buffer = buffer_list->list[buffer_list->active];
+    int max_x, max_y;
     getmaxyx(stdscr, max_y, max_x);
 
     // That's one beautiful UI.
@@ -59,6 +56,7 @@ void screen_render(void)
     attron(BLACK_WHITE);
       fill(' ', 0);
       mvprintw(0, 5, "Files");
+      char open_string[14];
       sprintf(open_string, "Open (%zu)", buffer_list->count);
       mvprintw(12, 0, "%-14s", open_string);
 
@@ -88,7 +86,7 @@ void screen_render(void)
 
       if (end_file > files.gl_pathc) end_file = files.gl_pathc;
 
-      for (file = start_file; file < end_file; file++) {
+      for (size_t file = start_file; file < end_file; file++) {
           if (is_dir(files.gl_pathv[file])) {
               attroff(FILE_COLOR);
               attron(DIR_COLOR);
@@ -103,7 +101,7 @@ void screen_render(void)
       }
 
       attron(FILE_COLOR);
-     for (i = 0; i < buffer_list->count; i++) {
+     for (size_t i = 0; i < buffer_list->count; i++) {
           if (buffer_list->active == i) {
               attroff(FILE_COLOR);
               attron(A_BOLD);

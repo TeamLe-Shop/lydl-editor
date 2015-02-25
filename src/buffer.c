@@ -42,7 +42,6 @@ void buffer_erase(buffer_t *buf, size_t pos)
 {
     // TODO: Right now just decreases end_pos, doesn't delete right char
     int len = -1;
-    int i;
 
     if (buf->end_pos_byte == 0) {
         return;
@@ -53,7 +52,7 @@ void buffer_erase(buffer_t *buf, size_t pos)
     assert(pos <= buf->end_pos_byte);
 
     // Seek back until we find a valid multibyte char
-    for (i = 0; i < (buf->data - (buf->data - pos)) + 1; i++) {
+    for (int i = 0; i < (buf->data - (buf->data - pos)) + 1; i++) {
         size_t max;
         max = buf->end_pos_byte - (pos + i);
         len = mblen(buf->data + (pos - i), max);
@@ -85,10 +84,9 @@ void buffer_insert(buffer_t* buf, char* src, size_t len, size_t pos) {
 
 void buffer_insert_char(buffer_t* buf, int ch, size_t pos)
 {
-    int len;
     char* mb = malloc(MB_CUR_MAX);
 
-    len = wctomb(mb, ch);
+    int len = wctomb(mb, ch);
     assert(len > 0);
     buffer_insert(buf, mb, len, pos);
     free(mb);
@@ -125,16 +123,13 @@ static size_t mbstrlen(const char* str, size_t max) {
 
 void buffer_load_from_file(buffer_t* buf, const char* filename)
 {
-    FILE* f;
-    long len;
-
-    f = fopen(filename, "r");
+    FILE* f = fopen(filename, "r");
     if (!f) {
         set_name_file_new(buf, filename);
         return;
     }
     fseek(f, 0, SEEK_END);
-    len = ftell(f);
+    long len = ftell(f);
     fseek(f, 0, SEEK_SET);
     buf->data = realloc(buf->data, len);
     fread(buf->data, 1, len, f);
