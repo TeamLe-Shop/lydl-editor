@@ -74,6 +74,8 @@ void buffer_insert(buffer_t* buf, char* src, size_t len, size_t pos) {
     while (buf->end_pos_byte + len >= buf->capacity) {
         buffer_expand(buf);
     }
+    // Make space for the insertion by moving the text after the insertion
+    memmove(buf->data + pos + len, buf->data + pos, buf->end_pos_byte - pos);
     memcpy(buf->data + pos, src, len);
     buf->end_pos_byte += len;
     buf->cursor_pos_byte += len;

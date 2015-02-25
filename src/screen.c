@@ -141,7 +141,7 @@ void screen_input(int ch)
             break;
         default:
             buffer_insert_char(current_buffer, ch,
-                               current_buffer->end_pos_byte);
+                               current_buffer->cursor_pos_byte);
         }
 
     } else if (editor_state == BUFFERS) {
