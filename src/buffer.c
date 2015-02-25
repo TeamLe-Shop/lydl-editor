@@ -40,7 +40,7 @@ void buffer_expand(buffer_t* buf)
 
 void buffer_erase(buffer_t *buf, size_t pos)
 {
-    /* TODO: Right now just decreases end_pos, doesn't delete right char */
+    // TODO: Right now just decreases end_pos, doesn't delete right char
     int len = -1;
     int i;
 
@@ -52,7 +52,7 @@ void buffer_erase(buffer_t *buf, size_t pos)
 
     assert(pos <= buf->end_pos_byte);
 
-    /* Seek back until we find a valid multibyte char */
+    // Seek back until we find a valid multibyte char
     for (i = 0; i < (buf->data - (buf->data - pos)) + 1; i++) {
         size_t max;
         max = buf->end_pos_byte - (pos + i);
@@ -78,7 +78,7 @@ void buffer_insert(buffer_t* buf, char* src, size_t len, size_t pos) {
     memcpy(buf->data + pos, src, len);
     buf->end_pos_byte += len;
     buf->cursor_pos_byte += len;
-    /* TODO: buffer_insert doesn't always insert just one character */
+    // TODO: buffer_insert doesn't always insert just one character
     buf->end_pos_char++;
     buf->cursor_pos_char++;
 }
@@ -104,7 +104,7 @@ static void set_name_file_new(buffer_t* buf, const char* filename) {
     strncat(buf->name, " (NEW)", new_size);
 }
 
-/* Character length of multibyte string */
+// Character length of multibyte string
 static size_t mbstrlen(const char* str, size_t max) {
     size_t len = 0;
     int pos = 0;

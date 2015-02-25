@@ -45,7 +45,7 @@ void draw_content(buffer_t* buf, int y, int x)
         if (buf->data[i] == '\n') {
             y_pos++;
             x_pos = x;
-            /* Force the cursor to appear on empty lines */
+            // Force the cursor to appear on empty lines
             mvprintw(y_pos, x_pos + 1, "");
             i++;
         } else {
@@ -75,15 +75,15 @@ void draw_content(buffer_t* buf, int y, int x)
 void print_up_to(char* buf, int y, int x, size_t max)
 {
     size_t copy_this_much;
-    /* Allocate enough bytes for max + null terminator */
+    // Allocate enough bytes for max + null terminator
     char* print_buf = malloc(max + 1);
     size_t src_len = strlen(buf);
 
-    /* Make sure print buffer is null terminated */
+    // Make sure print buffer is null terminated
     memset(print_buf, 0, max + 1);
 
-    /* If source is larger than max, we only want to copy */
-    /* max - 3 bytes, as the last 3 characters will be `...` */
+    // If source is larger than max, we only want to copy
+    // max - 3 bytes, as the last 3 characters will be `...`
     if (src_len <= max) {
         copy_this_much = max;
     } else {

@@ -54,7 +54,7 @@ void screen_render(void)
     buffer_t* current_buffer = buffer_list->list[buffer_list->active];
     getmaxyx(stdscr, max_y, max_x);
 
-    /* That's one beautiful UI. */
+    // That's one beautiful UI.
 
     attron(BLACK_WHITE);
       fill(' ', 0);
@@ -73,7 +73,7 @@ void screen_render(void)
 
     attron(FILE_COLOR);
       switch (glob("*", 0, NULL, &files)) {
-      case 0: /* Successful */
+      case 0: // Successful
           break;
       case GLOB_NOSPACE:
           printf("Ran out of memory while listing files.\n");
@@ -122,7 +122,7 @@ void screen_render(void)
 
     attroff(FILE_COLOR);
 
-    /* Set the cursor pos to inside the editor. */
+    // Set the cursor pos to inside the editor.
     move(1, 15);
     draw_content(current_buffer, 1, 14);
 }
