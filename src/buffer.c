@@ -182,6 +182,50 @@ void buffer_move_cursor_right(buffer_t* buffer) {
     }
 }
 
+void buffer_move_cursor_up(buffer_t* buffer) {
+}
+
+static void buffer_find_next_char(buffer_t* buffer, wchar_t ch,
+                                  size_t* char_pos, size_t* byte_pos) {
+    int consumed = 0;
+    int i = 0;
+
+    for (;;) {
+        wchar_t extracted_ch;
+        int result = mbtowc(&extracted_ch,
+                            buffer->data + buffer->cursor_pos_byte + consumed,
+                            MB_CUR_MAX);
+
+        if (extracted_ch == ch) {
+            *char_pos = buffer->cursor_pos_char + i + 1;
+            *byte_pos = buffer->cursor_pos_byte
+                        + consumed
+                        + mblen(buffer->data
+                                + buffer->cursor_pos_byte + consumed,
+                                MB_CUR_MAX);
+            return;
+        }
+
+        if (result == 0) {
+            *char_pos = buffer->cursor_pos_char + i;
+            *byte_pos = buffer->cursor_pos_byte + consumed;
+            return;
+        } else if (result < 0) {
+            assert(false && "Invalid multibyte sequence");
+        } else {
+            consumed += result;
+            ++i;
+        }
+    }
+}
+
+void buffer_move_cursor_down(buffer_t* buffer) {
+    size_t char_pos = 0, byte_pos = 0;
+    buffer_find_next_char(buffer, '\n', &char_pos, &byte_pos);
+    buffer->cursor_pos_byte = byte_pos;
+    buffer->cursor_pos_char = char_pos;
+}
+
 buffer_list_t* buffer_list_create()
 {
     buffer_list_t* list = malloc(sizeof(buffer_list_t));

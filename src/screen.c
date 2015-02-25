@@ -139,6 +139,12 @@ void screen_input(int ch)
         case KEY_RIGHT:
             buffer_move_cursor_right(current_buffer);
             break;
+        case KEY_UP:
+            buffer_move_cursor_up(current_buffer);
+            break;
+        case KEY_DOWN:
+            buffer_move_cursor_down(current_buffer);
+            break;
         default:
             buffer_insert_char(current_buffer, ch,
                                current_buffer->cursor_pos_byte);
