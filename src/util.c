@@ -49,7 +49,7 @@ void draw_content(buffer_t* buf, int y, int x)
             int len;
             x_pos++;
             len = mbtowc(&wc, buf->data + i, buf->capacity - i);
-            assert(len > 0);
+            assert(len > 0 && "Invalid multibyte sequence.");
             if (buf->data[i] == '/' && buf->data[i+1] == '*') {
                 attron(DIR_COLOR);
             }
