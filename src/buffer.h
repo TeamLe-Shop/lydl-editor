@@ -49,6 +49,11 @@ void buffer_move_cursor_right(buffer_t* buffer);
 void buffer_move_cursor_up(buffer_t* buffer);
 void buffer_move_cursor_down(buffer_t* buffer);
 
+// Save the contents of the buffer into the file named by the buffer's name
+//
+// On success, returns 0, on error, returns -1
+int buffer_save(buffer_t* buffer);
+
 // Create a buffer list
 buffer_list_t* buffer_list_create();
 

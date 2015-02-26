@@ -226,6 +226,22 @@ void buffer_move_cursor_down(buffer_t* buffer) {
     buffer->cursor_pos_char = char_pos;
 }
 
+int buffer_save(buffer_t* buffer) {
+    FILE* f = fopen(buffer->name, "w");
+
+    if (!f) {
+        return -1;
+    }
+
+    size_t result = fwrite(buffer->data, 1, buffer->end_pos_byte, f);
+
+    if (result != buffer->end_pos_byte) {
+        return -1;
+    }
+
+    return 0;
+}
+
 buffer_list_t* buffer_list_create()
 {
     buffer_list_t* list = malloc(sizeof(buffer_list_t));

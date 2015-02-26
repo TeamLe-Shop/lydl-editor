@@ -8,6 +8,7 @@
 #include <string.h>
 #include <glob.h>
 #include <ctype.h>
+#include <assert.h>
 
 buffer_list_t* buffer_list;
 
@@ -144,6 +145,11 @@ void screen_input(int ch)
             break;
         case KEY_DOWN:
             buffer_move_cursor_down(current_buffer);
+            break;
+        case KEY_F(5):
+            if (buffer_save(current_buffer) == -1) {
+                assert(false && "Failed to save file!");
+            }
             break;
         default:
             buffer_insert_char(current_buffer, ch,
