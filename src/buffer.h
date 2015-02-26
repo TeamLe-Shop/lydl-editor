@@ -5,7 +5,7 @@
 #include <stdbool.h>
 
 typedef struct {
-    char* name;
+    char* filename;
     char* data;
     size_t capacity;
     size_t cursor_pos_byte;
@@ -18,6 +18,7 @@ typedef struct {
     // Whether the buffer contents have been
     // modified since it was loaded/saved
     bool modified;
+    bool is_new;
 } buffer_t;
 
 typedef struct {
@@ -42,12 +43,15 @@ void buffer_erase_char(buffer_t* buf, size_t pos);
 void buffer_insert_char(buffer_t* buf, int ch, size_t pos);
 
 // Load file contents into buffer
-void buffer_load_from_file(buffer_t* buf, const char* filename);
+void buffer_try_load_from_file(buffer_t* buf, const char* filename);
 
 void buffer_move_cursor_left(buffer_t* buffer);
 void buffer_move_cursor_right(buffer_t* buffer);
 void buffer_move_cursor_up(buffer_t* buffer);
 void buffer_move_cursor_down(buffer_t* buffer);
+
+// Whether the buffer points to a new file (that doesn't exist on disk yet)
+bool buffer_is_new(const buffer_t* buffer);
 
 // Save the contents of the buffer into the file named by the buffer's name
 //

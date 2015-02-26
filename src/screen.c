@@ -29,7 +29,7 @@ void screen_init(int argc, char** argv)
     keypad(stdscr, TRUE);
     buffer_t* start_buffer = buffer_create("untitled (NEW)");
     if (argc > 1) {
-        buffer_load_from_file(start_buffer, argv[1]);
+        buffer_try_load_from_file(start_buffer, argv[1]);
     }
     buffer_list = buffer_list_create();
     buffer_list_add(buffer_list, start_buffer);
@@ -41,6 +41,16 @@ void init_colors(void)
     init_pair(2, COLOR_WHITE, COLOR_BLACK);
     init_pair(3, COLOR_BLUE, COLOR_BLACK);
     init_pair(4, COLOR_WHITE, COLOR_GREEN);
+}
+
+static char * buffer_display_name(const buffer_t * buf) {
+    char * name = copy_string_into_new_buf(buf->filename);
+
+    if (buf->is_new) {
+        append_to_string_buf(&name, " (NEW)");
+    }
+
+    return name;
 }
 
 void screen_render(void)
@@ -62,7 +72,9 @@ void screen_render(void)
       mvprintw(12, 0, "%-14s", open_string);
 
       fill_vert(' ', 14);
-      mvprintw(0, (max_x / 2) + 7, current_buffer->name);
+      char * name = buffer_display_name(current_buffer);
+      mvprintw(0, (max_x / 2) + 7, name);
+      free(name);
       fill(' ', max_y-1);
       mvprintw(max_y-1, 15, "Cursor Pos: %zu Byte Pos: %zu  Buffer Len: %zu",
                current_buffer->cursor_pos_char,
@@ -108,7 +120,9 @@ void screen_render(void)
               attron(A_BOLD);
               attron(SELECTED_COLOR);
           }
-          print_up_to(buffer_list->list[i]->name, 13 + i, 0, 14);
+          char * name = buffer_display_name(buffer_list->list[i]);
+          print_up_to(name, 13 + i, 0, 14);
+          free(name);
           if (buffer_list->active == i) {
               attroff(SELECTED_COLOR);
               attroff(A_BOLD);

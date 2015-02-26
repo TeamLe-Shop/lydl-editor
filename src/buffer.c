@@ -1,5 +1,7 @@
 #include "buffer.h"
 
+#include "util.h"
+
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
@@ -10,8 +12,8 @@ size_t const INITIAL_BUFFER_SIZE = 8;
 buffer_t *buffer_create(char* name)
 {
     buffer_t* buf = malloc(sizeof(buffer_t));
-    buf->name = malloc(strlen(name) + 1);
-    strncpy(buf->name, name, strlen(name) + 1);
+    buf->filename = malloc(strlen(name) + 1);
+    strncpy(buf->filename, name, strlen(name) + 1);
     buf->data = malloc(INITIAL_BUFFER_SIZE);
     buf->capacity = INITIAL_BUFFER_SIZE;
     memset(buf->data, 0, buf->capacity);
@@ -19,13 +21,14 @@ buffer_t *buffer_create(char* name)
     buf->cursor_pos_byte= 0;
     buf->end_pos_char = 0;
     buf->cursor_pos_char = 0;
+    buf->is_new = false;
     return buf;
 }
 
 void buffer_free(buffer_t* buf)
 {
     free(buf->data);
-    free(buf->name);
+    free(buf->filename);
     free(buf);
 }
 
@@ -99,16 +102,6 @@ void buffer_insert_char(buffer_t* buf, int ch, size_t pos)
     free(mb);
 }
 
-static void set_name_file_new(buffer_t* buf, const char* filename) {
-    const char* str = " (NEW)";
-    const size_t filename_len = strlen(filename);
-    const size_t new_size = filename_len + strlen(str) + 1;
-    buf->name = realloc(buf->name, new_size);
-    memset(buf->name, 0, new_size);
-    strncpy(buf->name, filename, filename_len + 1);
-    strncat(buf->name, " (NEW)", new_size);
-}
-
 // Character length of multibyte string
 static size_t mbstrlen(const char* str, size_t max) {
     size_t len = 0;
@@ -128,11 +121,14 @@ static size_t mbstrlen(const char* str, size_t max) {
     return len + 1;
 }
 
-void buffer_load_from_file(buffer_t* buf, const char* filename)
+void buffer_try_load_from_file(buffer_t* buf, const char* filename)
 {
+    set_string_buf(&buf->filename, filename);
     FILE* f = fopen(filename, "r");
+    // TODO: We probably want to check if the file
+    // exists instead of whether the open failed.
     if (!f) {
-        set_name_file_new(buf, filename);
+        buf->is_new = true;
         return;
     }
     fseek(f, 0, SEEK_END);
@@ -145,8 +141,6 @@ void buffer_load_from_file(buffer_t* buf, const char* filename)
     buf->cursor_pos_char = 0;
     buf->end_pos_char = mbstrlen(buf->data, len);
     buf->capacity = len;
-    buf->name = realloc(buf->name, strlen(filename) + 1);
-    strncpy(buf->name, filename, strlen(filename) + 1);
     fclose(f);
 }
 
@@ -226,8 +220,12 @@ void buffer_move_cursor_down(buffer_t* buffer) {
     buffer->cursor_pos_char = char_pos;
 }
 
+bool buffer_is_new(const buffer_t* buffer) {
+    return buffer->is_new;
+}
+
 int buffer_save(buffer_t* buffer) {
-    FILE* f = fopen(buffer->name, "w");
+    FILE* f = fopen(buffer->filename, "w");
 
     if (!f) {
         return -1;
