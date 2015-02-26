@@ -176,7 +176,51 @@ void buffer_move_cursor_right(buffer_t* buffer) {
     }
 }
 
+static void buffer_find_prev_char(const buffer_t* buffer, wchar_t ch,
+                                  size_t* char_pos, size_t* byte_pos) {
+    int consumed = 0;
+    int i = 0;
+
+    int from = buffer->cursor_pos_byte - 1;
+
+    if (from <= 0) {
+        return;
+    }
+
+    for (;;) {
+        wchar_t extracted_ch;
+        int result = mbtowc(&extracted_ch,
+                            buffer->data + from - consumed,
+                            MB_CUR_MAX);
+
+        // Continue seeking back if invalid multibyte data is found
+        if (result < 0) {
+            continue;
+        }
+
+        assert(result != 0);
+
+        if (extracted_ch == ch) {
+            *char_pos = buffer->cursor_pos_char - i;
+            *byte_pos = from - consumed;
+            return;
+        }
+
+        consumed += result;
+
+        if (from - consumed <= 0) {
+            return;
+        }
+
+        ++i;
+    }
+}
+
 void buffer_move_cursor_up(buffer_t* buffer) {
+    size_t char_pos = 0, byte_pos = 0;
+    buffer_find_prev_char(buffer, '\n', &char_pos, &byte_pos);
+    buffer->cursor_pos_byte = byte_pos;
+    buffer->cursor_pos_char = char_pos;
 }
 
 static void buffer_find_next_char(buffer_t* buffer, wchar_t ch,
