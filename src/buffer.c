@@ -237,6 +237,8 @@ int buffer_save(buffer_t* buffer) {
         return -1;
     }
 
+    buffer->is_new = false;
+
     return 0;
 }
 
