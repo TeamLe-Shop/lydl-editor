@@ -58,6 +58,9 @@ bool buffer_is_new(const buffer_t* buffer);
 // On success, returns 0, on error, returns -1
 int buffer_save(buffer_t* buffer);
 
+// Reload the buffer from the corresponding file on disk
+void buffer_reload(buffer_t* buffer);
+
 // Create a buffer list
 buffer_list_t* buffer_list_create();
 

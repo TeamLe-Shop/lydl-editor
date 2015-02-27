@@ -115,7 +115,6 @@ static size_t mbstrlen(const char* str, size_t max) {
         if ((size_t)pos >= max) {
             break;
         }
-        printf("%d\n", pos);
         ++len;
     }
     return len + 1;
@@ -135,12 +134,14 @@ void buffer_try_load_from_file(buffer_t* buf, const char* filename)
     long len = ftell(f);
     fseek(f, 0, SEEK_SET);
     buf->data = realloc(buf->data, len);
+    assert(buf->data && "Realloc failed");
     fread(buf->data, 1, len, f);
     buf->end_pos_byte = len;
     buf->cursor_pos_byte = 0;
     buf->cursor_pos_char = 0;
     buf->end_pos_char = mbstrlen(buf->data, len);
     buf->capacity = len;
+    buf->modified = false;
     fclose(f);
 }
 
@@ -277,6 +278,8 @@ int buffer_save(buffer_t* buffer) {
 
     size_t result = fwrite(buffer->data, 1, buffer->end_pos_byte, f);
 
+    fclose(f);
+
     if (result != buffer->end_pos_byte) {
         return -1;
     }
@@ -285,6 +288,10 @@ int buffer_save(buffer_t* buffer) {
     buffer->modified = false;
 
     return 0;
+}
+
+void buffer_reload(buffer_t* buffer) {
+    buffer_try_load_from_file(buffer, buffer->filename);
 }
 
 buffer_list_t* buffer_list_create()

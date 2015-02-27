@@ -107,6 +107,10 @@ int is_dir(const char* path)
 
 void set_string_buf(char** buf, const char* src)
 {
+    // Do nothing if trying to set the buffer from itself
+    if (*buf == src) {
+        return;
+    }
     const int len = strlen(src) + 1;
     *buf = realloc(*buf, len);
     assert(*buf && "Failed to realloc");

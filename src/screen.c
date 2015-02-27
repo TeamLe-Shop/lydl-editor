@@ -167,6 +167,9 @@ void screen_input(int ch)
                 assert(false && "Failed to save file!");
             }
             break;
+        case KEY_F(7):
+            buffer_reload(current_buffer);
+            break;
         default:
             buffer_insert_char(current_buffer, ch,
                                current_buffer->cursor_pos_byte);
