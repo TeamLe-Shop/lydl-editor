@@ -186,6 +186,9 @@ void screen_input(editor_t* editor, int ch)
         case KEY_F(7):
             buffer_reload(current_buffer);
             break;
+        case KEY_F(10):
+            editor_request_quit(editor);
+            break;
         default:
             buffer_insert_char(current_buffer, ch,
                                current_buffer->cursor_pos_byte);

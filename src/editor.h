@@ -17,5 +17,6 @@ buffer_t* editor_buffer_at(const editor_t* editor, size_t index);
 int editor_state(const editor_t* editor);
 void editor_switch_to_prev_buffer(editor_t* editor);
 void editor_switch_to_next_buffer(editor_t* editor);
+void editor_request_quit(editor_t* editor);
 
 #endif // EDITOR_H

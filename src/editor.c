@@ -81,3 +81,9 @@ void editor_switch_to_next_buffer(editor_t* editor)
         editor->buffer_list->active--;
     }
 }
+
+
+void editor_request_quit(editor_t* editor)
+{
+    editor->quit_requested = true;
+}
