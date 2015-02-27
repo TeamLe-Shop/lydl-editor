@@ -177,6 +177,14 @@ void screen_input(int ch)
         case KEY_DC:
             // buffer_delete_next_char(current_buffer);
             break;
+        case '\t':
+            // TODO: Proper indentation
+            // Now we are just inserting 4 spaces unconditionally
+            for (int i = 0; i < 4; ++i) {
+                buffer_insert_char(current_buffer, ' ',
+                                   current_buffer->cursor_pos_byte);
+            }
+            break;
         case KEY_F(5):
             if (buffer_save(current_buffer) == -1) {
                 assert(false && "Failed to save file!");
