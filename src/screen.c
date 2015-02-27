@@ -162,6 +162,21 @@ void screen_input(int ch)
         case KEY_DOWN:
             buffer_move_cursor_down(current_buffer);
             break;
+        case KEY_HOME:
+            // buffer_move_cursor_home(current_buffer);
+            break;
+        case KEY_END:
+            // buffer_move_cursor_end(current_buffer);
+            break;
+        case KEY_PPAGE:
+            // buffer_page_up(current_buffer);
+            break;
+        case KEY_NPAGE:
+            // buffer_page_down(current_buffer);
+            break;
+        case KEY_DC:
+            // buffer_delete_next_char(current_buffer);
+            break;
         case KEY_F(5):
             if (buffer_save(current_buffer) == -1) {
                 assert(false && "Failed to save file!");
