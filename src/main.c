@@ -1,3 +1,5 @@
+#include "editor.h"
+
 #include <stdio.h>
 #include <curses.h>
 #include "screen.h"
@@ -6,14 +8,18 @@
 int main(int argc, char** argv)
 {
     setlocale(LC_CTYPE, "");
-    screen_init(argc, argv);
+    editor_t* editor = editor_new();
+    screen_init(argc, argv, editor);
 
-    while (1) {
+    while (!editor_quit(editor)) {
         erase();
-        screen_render();
+        screen_render(editor);
         wint_t ch;
         get_wch(&ch);
-        screen_input(ch);
+        screen_input(editor, ch);
     }
+
+    screen_destroy(editor);
+
     return 0;
 }

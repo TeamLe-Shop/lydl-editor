@@ -10,16 +10,12 @@
 #include <ctype.h>
 #include <assert.h>
 
-buffer_list_t* buffer_list;
-
-int editor_state = EDITOR;
-
-void screen_init(int argc, char** argv)
+void screen_init(int argc, char** argv, editor_t* editor)
 {
     initscr();
     if (!has_colors())
     {
-        screen_destroy();
+        screen_destroy(editor);
         printf("Your terminal doesn't support color. Sad smiley :(\n");
         exit(1);
     }
@@ -27,12 +23,9 @@ void screen_init(int argc, char** argv)
     init_colors();
 
     keypad(stdscr, TRUE);
-    buffer_t* start_buffer = buffer_create("untitled (NEW)");
     if (argc > 1) {
-        buffer_try_load_from_file(start_buffer, argv[1]);
+        buffer_try_load_from_file(editor_current_buffer(editor), argv[1]);
     }
-    buffer_list = buffer_list_create();
-    buffer_list_add(buffer_list, start_buffer);
 }
 
 void init_colors(void)
@@ -55,12 +48,12 @@ static char * buffer_display_name(const buffer_t * buf) {
     return name;
 }
 
-void screen_render(void)
+void screen_render(const editor_t* editor)
 {
     unsigned int start_file = 0;
     unsigned int end_file = start_file + 12;
     glob_t files;
-    buffer_t* current_buffer = buffer_list->list[buffer_list->active];
+    buffer_t* current_buffer = editor_current_buffer(editor);
     int max_x, max_y;
     getmaxyx(stdscr, max_y, max_x);
 
@@ -70,7 +63,7 @@ void screen_render(void)
       fill(' ', 0);
       mvprintw(0, 5, "Files");
       char open_string[14];
-      sprintf(open_string, "Open (%zu)", buffer_list->count);
+      sprintf(open_string, "Open (%zu)", editor_buffer_count(editor));
       mvprintw(12, 0, "%-14s", open_string);
 
       fill_vert(' ', 14);
@@ -116,16 +109,16 @@ void screen_render(void)
       }
 
       attron(FILE_COLOR);
-     for (size_t i = 0; i < buffer_list->count; i++) {
-          if (buffer_list->active == i) {
+     for (size_t i = 0; i < editor_buffer_count(editor); i++) {
+          if (editor_index_of_current_buffer(editor) == i) {
               attroff(FILE_COLOR);
               attron(A_BOLD);
               attron(SELECTED_COLOR);
           }
-          char * name = buffer_display_name(buffer_list->list[i]);
+          char * name = buffer_display_name(editor_buffer_at(editor, i));
           print_up_to(name, 13 + i, 0, 14);
           free(name);
-          if (buffer_list->active == i) {
+          if (editor_index_of_current_buffer(editor) == i) {
               attroff(SELECTED_COLOR);
               attroff(A_BOLD);
               attron(FILE_COLOR);
@@ -142,10 +135,10 @@ void screen_render(void)
     draw_content(current_buffer, 1, 14);
 }
 
-void screen_input(int ch)
+void screen_input(editor_t* editor, int ch)
 {
-    buffer_t* current_buffer = buffer_list->list[buffer_list->active];
-    if (editor_state == EDITOR) {
+    buffer_t* current_buffer = editor_current_buffer(editor);
+    if (editor_state(editor) == EDITOR) {
         switch (ch) {
         case CKEY_BACKSPACE:
             buffer_erase_char(current_buffer, current_buffer->cursor_pos_byte);
@@ -198,24 +191,20 @@ void screen_input(int ch)
                                current_buffer->cursor_pos_byte);
         }
 
-    } else if (editor_state == BUFFERS) {
+    } else if (editor_state(editor) == BUFFERS) {
         switch (ch) {
         case KEY_UP:
-            if (buffer_list->active > 0) {
-                buffer_list->active--;
-            }
+            editor_switch_to_prev_buffer(editor);
             break;
         case KEY_DOWN:
-            if (buffer_list->active > 0) {
-                buffer_list->active--;
-            }
+            editor_switch_to_next_buffer(editor);
             break;
         }
     }
 }
 
-void screen_destroy(void)
+void screen_destroy(editor_t* editor)
 {
-    buffer_list_free(buffer_list);
+    editor_free(editor);
     endwin();
 }
