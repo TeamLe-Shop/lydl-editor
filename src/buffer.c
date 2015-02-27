@@ -282,6 +282,7 @@ int buffer_save(buffer_t* buffer) {
     }
 
     buffer->is_new = false;
+    buffer->modified = false;
 
     return 0;
 }
