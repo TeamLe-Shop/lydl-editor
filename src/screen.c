@@ -48,6 +48,8 @@ static char * buffer_display_name(const buffer_t * buf) {
 
     if (buf->is_new) {
         append_to_string_buf(&name, " (NEW)");
+    } else if (buf->modified) {
+        append_to_string_buf(&name, " *");
     }
 
     return name;
