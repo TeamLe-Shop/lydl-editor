@@ -1,7 +1,6 @@
 #include "editor.h"
 
 #include "buffer.h"
-#include "constants.h"
 
 #include <stdlib.h>
 
