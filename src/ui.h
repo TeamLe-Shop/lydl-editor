@@ -15,7 +15,7 @@ bool ui_init();
 void ui_render(const editor_t* editor);
 
 // Handle user input
-void ui_handle_input(editor_t* editor, int ch);
+void ui_handle_input(editor_t* editor);
 
 // Destroy the user interface
 void ui_destroy();

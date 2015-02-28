@@ -48,6 +48,7 @@ static char * buffer_display_name(const buffer_t * buf) {
 
 void ui_render(const editor_t* editor)
 {
+    erase();
     unsigned int start_file = 0;
     unsigned int end_file = start_file + 12;
     glob_t files;
@@ -133,8 +134,10 @@ void ui_render(const editor_t* editor)
     draw_content(current_buffer, 1, 14);
 }
 
-void ui_handle_input(editor_t* editor, int ch)
+void ui_handle_input(editor_t* editor)
 {
+    wint_t ch;
+    get_wch(&ch);
     buffer_t* current_buffer = editor_current_buffer(editor);
     if (editor_state(editor) == EDITOR_STATE_EDIT) {
         switch (ch) {

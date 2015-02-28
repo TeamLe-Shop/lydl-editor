@@ -2,7 +2,6 @@
 #include "ui.h"
 
 #include <stdio.h>
-#include <curses.h>
 #include <stdlib.h>
 #include <locale.h>
 
@@ -23,11 +22,8 @@ int main(int argc, char** argv)
     }
 
     while (!editor_quit_requested(editor)) {
-        erase();
         ui_render(editor);
-        wint_t ch;
-        get_wch(&ch);
-        ui_handle_input(editor, ch);
+        ui_handle_input(editor);
     }
 
     ui_destroy();
