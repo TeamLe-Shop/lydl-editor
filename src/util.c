@@ -6,8 +6,6 @@
 #include "ui.h"
 #include <assert.h>
 
-
-
 int is_dir(const char* path)
 {
     struct stat buf;
@@ -27,7 +25,6 @@ void set_string_buf(char** buf, const char* src)
     strncpy(*buf, src, len);
 }
 
-
 char* copy_string_into_new_buf(const char* src)
 {
     const int len = strlen(src) + 1;
@@ -36,7 +33,6 @@ char* copy_string_into_new_buf(const char* src)
     strncpy(buf, src, len);
     return buf;
 }
-
 
 void append_to_string_buf(char** buf, const char* src)
 {
