@@ -9,7 +9,7 @@ typedef struct editor editor_t;
 
 editor_t* editor_new();
 void editor_free(editor_t* editor);
-bool editor_quit(const editor_t* editor);
+bool editor_quit_requested(const editor_t* editor);
 buffer_t* editor_current_buffer(const editor_t* editor);
 size_t editor_buffer_count(const editor_t* editor);
 size_t editor_index_of_current_buffer(const editor_t* editor);

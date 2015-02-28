@@ -31,7 +31,7 @@ void editor_free(editor_t* editor)
 }
 
 
-bool editor_quit(const editor_t* editor)
+bool editor_quit_requested(const editor_t* editor)
 {
     return editor->quit_requested;
 }

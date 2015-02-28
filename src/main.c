@@ -20,7 +20,7 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    while (!editor_quit(editor)) {
+    while (!editor_quit_requested(editor)) {
         erase();
         screen_render(editor);
         wint_t ch;
