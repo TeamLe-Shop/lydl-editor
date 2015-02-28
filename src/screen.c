@@ -133,7 +133,7 @@ void screen_render(const editor_t* editor)
     draw_content(current_buffer, 1, 14);
 }
 
-void screen_input(editor_t* editor, int ch)
+void screen_handle_input(editor_t* editor, int ch)
 {
     buffer_t* current_buffer = editor_current_buffer(editor);
     if (editor_state(editor) == EDITOR) {

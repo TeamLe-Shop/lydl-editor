@@ -25,7 +25,7 @@ int main(int argc, char** argv)
         screen_render(editor);
         wint_t ch;
         get_wch(&ch);
-        screen_input(editor, ch);
+        screen_handle_input(editor, ch);
     }
 
     screen_destroy();

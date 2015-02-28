@@ -18,7 +18,7 @@ void screen_render(const editor_t* editor);
 void init_colors(void);
 
 // Input.
-void screen_input(editor_t* editor, int ch);
+void screen_handle_input(editor_t* editor, int ch);
 
 // Destroy curses window
 void screen_destroy();
