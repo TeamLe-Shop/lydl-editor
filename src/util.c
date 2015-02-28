@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sys/stat.h>
-#include "screen.h"
+#include "ui.h"
 #include <assert.h>
 
 void fill(char ch, int row)

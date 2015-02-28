@@ -1,4 +1,4 @@
-#include "screen.h"
+#include "ui.h"
 #include "util.h"
 #include "buffer.h"
 #include "constants.h"
@@ -10,12 +10,20 @@
 #include <ctype.h>
 #include <assert.h>
 
-bool screen_init()
+static void init_colors(void)
+{
+    init_pair(1, COLOR_BLACK, COLOR_WHITE);
+    init_pair(2, COLOR_WHITE, COLOR_BLACK);
+    init_pair(3, COLOR_BLUE, COLOR_BLACK);
+    init_pair(4, COLOR_WHITE, COLOR_GREEN);
+}
+
+bool ui_init()
 {
     initscr();
     if (!has_colors())
     {
-        screen_destroy();
+        ui_destroy();
         printf("Your terminal doesn't support color. Sad smiley :(\n");
         return false;
     }
@@ -24,14 +32,6 @@ bool screen_init()
 
     keypad(stdscr, TRUE);
     return true;
-}
-
-void init_colors(void)
-{
-    init_pair(1, COLOR_BLACK, COLOR_WHITE);
-    init_pair(2, COLOR_WHITE, COLOR_BLACK);
-    init_pair(3, COLOR_BLUE, COLOR_BLACK);
-    init_pair(4, COLOR_WHITE, COLOR_GREEN);
 }
 
 static char * buffer_display_name(const buffer_t * buf) {
@@ -46,7 +46,7 @@ static char * buffer_display_name(const buffer_t * buf) {
     return name;
 }
 
-void screen_render(const editor_t* editor)
+void ui_render(const editor_t* editor)
 {
     unsigned int start_file = 0;
     unsigned int end_file = start_file + 12;
@@ -133,7 +133,7 @@ void screen_render(const editor_t* editor)
     draw_content(current_buffer, 1, 14);
 }
 
-void screen_handle_input(editor_t* editor, int ch)
+void ui_handle_input(editor_t* editor, int ch)
 {
     buffer_t* current_buffer = editor_current_buffer(editor);
     if (editor_state(editor) == EDITOR_STATE_EDIT) {
@@ -204,7 +204,7 @@ void screen_handle_input(editor_t* editor, int ch)
     }
 }
 
-void screen_destroy()
+void ui_destroy()
 {
     endwin();
 }
