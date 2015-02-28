@@ -136,7 +136,7 @@ void screen_render(const editor_t* editor)
 void screen_handle_input(editor_t* editor, int ch)
 {
     buffer_t* current_buffer = editor_current_buffer(editor);
-    if (editor_state(editor) == EDITOR) {
+    if (editor_state(editor) == EDITOR_STATE_EDIT) {
         switch (ch) {
         case CKEY_BACKSPACE:
             buffer_erase_char(current_buffer, current_buffer->cursor_pos_byte);
@@ -192,7 +192,7 @@ void screen_handle_input(editor_t* editor, int ch)
                                current_buffer->cursor_pos_byte);
         }
 
-    } else if (editor_state(editor) == BUFFERS) {
+    } else if (editor_state(editor) == EDITOR_STATE_BUFFERS) {
         switch (ch) {
         case KEY_UP:
             editor_switch_to_prev_buffer(editor);

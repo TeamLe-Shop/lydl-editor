@@ -8,7 +8,7 @@
 struct editor {
     bool quit_requested;
     buffer_list_t* buffer_list;
-    int state;
+    editor_state_t state;
 };
 
 
@@ -19,7 +19,7 @@ editor_t* editor_new()
     editor->buffer_list = buffer_list_create();
     buffer_t* start_buffer = buffer_create("untitled (NEW)");
     buffer_list_add(editor->buffer_list, start_buffer);
-    editor->state = EDITOR;
+    editor->state = EDITOR_STATE_EDIT;
     return editor;
 }
 
@@ -61,7 +61,7 @@ buffer_t*editor_buffer_at(const editor_t* editor, size_t index)
 }
 
 
-int editor_state(const editor_t* editor)
+editor_state_t editor_state(const editor_t* editor)
 {
     return editor->state;
 }

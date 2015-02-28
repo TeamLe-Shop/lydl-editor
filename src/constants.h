@@ -6,7 +6,3 @@
 #elif defined(__APPLE__) || defined(__MACH__) // Both are the same
     #define CKEY_BACKSPACE 127
 #endif
-
-
-#define EDITOR 0
-#define BUFFERS 1
