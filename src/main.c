@@ -8,6 +8,8 @@
 
 int main(int argc, char** argv)
 {
+    // We need to set the correct locale
+    // for proper wide character support
     setlocale(LC_CTYPE, "");
 
     if (!ui_init()) {
