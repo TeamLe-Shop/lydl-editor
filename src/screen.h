@@ -9,7 +9,7 @@
 #define SELECTED_COLOR COLOR_PAIR(4)
 
 // Initialize curses
-void screen_init(int argc, char** argv, editor_t* editor);
+bool screen_init();
 
 // Draw the content.
 void screen_render(const editor_t* editor);
@@ -21,6 +21,6 @@ void init_colors(void);
 void screen_input(editor_t* editor, int ch);
 
 // Destroy curses window
-void screen_destroy(editor_t* editor);
+void screen_destroy();
 
 #endif // SCREEN_H

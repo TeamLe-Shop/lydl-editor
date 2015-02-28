@@ -10,22 +10,20 @@
 #include <ctype.h>
 #include <assert.h>
 
-void screen_init(int argc, char** argv, editor_t* editor)
+bool screen_init()
 {
     initscr();
     if (!has_colors())
     {
-        screen_destroy(editor);
+        screen_destroy();
         printf("Your terminal doesn't support color. Sad smiley :(\n");
-        exit(1);
+        return false;
     }
     start_color();
     init_colors();
 
     keypad(stdscr, TRUE);
-    if (argc > 1) {
-        buffer_try_load_from_file(editor_current_buffer(editor), argv[1]);
-    }
+    return true;
 }
 
 void init_colors(void)
@@ -206,8 +204,7 @@ void screen_input(editor_t* editor, int ch)
     }
 }
 
-void screen_destroy(editor_t* editor)
+void screen_destroy()
 {
-    editor_free(editor);
     endwin();
 }
