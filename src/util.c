@@ -1,9 +1,11 @@
 #include "util.h"
 
+#include "ui.h"
+
+#include <sys/stat.h>
+
 #include <string.h>
 #include <stdlib.h>
-#include <sys/stat.h>
-#include "ui.h"
 #include <assert.h>
 
 int is_dir(const char* path)

@@ -1,9 +1,6 @@
 #ifndef UTIL_H
 #define UTIL_H
 
-#include <stddef.h>
-#include "buffer.h"
-
 int is_dir(const char* path);
 
 // Set a heap allocated string buffer to a new string
