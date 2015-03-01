@@ -11,60 +11,60 @@ struct Editor {
 };
 
 
-Editor* editor_new()
+Editor* Editor_New()
 {
     Editor* editor = malloc(sizeof(Editor));
     editor->quit_requested = false;
-    editor->buffer_list = buffer_list_create();
+    editor->buffer_list = BufferList_Create();
     editor->state = EDITOR_STATE_EDIT;
     return editor;
 }
 
 
-void editor_free(Editor* editor)
+void Editor_Free(Editor* editor)
 {
-    buffer_list_free(editor->buffer_list);
+    BufferList_Free(editor->buffer_list);
     free(editor);
 }
 
 
-bool editor_quit_requested(const Editor* editor)
+bool Editor_QuitRequested(const Editor* editor)
 {
     return editor->quit_requested;
 }
 
 
-Buffer*editor_current_buffer(const Editor* editor)
+Buffer*Editor_CurrentBuffer(const Editor* editor)
 {
     return editor->buffer_list->list[editor->buffer_list->active];
 }
 
 
-size_t editor_buffer_count(const Editor* editor)
+size_t Editor_BufferCount(const Editor* editor)
 {
     return editor->buffer_list->count;
 }
 
 
-size_t editor_index_of_current_buffer(const Editor* editor)
+size_t Editor_IndexOfCurrentBuffer(const Editor* editor)
 {
     return editor->buffer_list->active;
 }
 
 
-Buffer*editor_buffer_at(const Editor* editor, size_t index)
+Buffer*Editor_BufferAt(const Editor* editor, size_t index)
 {
     return editor->buffer_list->list[index];
 }
 
 
-EditorState editor_state(const Editor* editor)
+EditorState Editor_State(const Editor* editor)
 {
     return editor->state;
 }
 
 
-void editor_switch_to_prev_buffer(Editor* editor)
+void Editor_SwitchToPrevBuffer(Editor* editor)
 {
     if (editor->buffer_list->active > 0) {
         editor->buffer_list->active--;
@@ -72,7 +72,7 @@ void editor_switch_to_prev_buffer(Editor* editor)
 }
 
 
-void editor_switch_to_next_buffer(Editor* editor)
+void Editor_SwitchToNextBuffer(Editor* editor)
 {
     if (editor->buffer_list->active < editor->buffer_list->count - 1) {
         editor->buffer_list->active++;
@@ -80,17 +80,17 @@ void editor_switch_to_next_buffer(Editor* editor)
 }
 
 
-void editor_request_quit(Editor* editor)
+void Editor_RequestQuit(Editor* editor)
 {
     editor->quit_requested = true;
 }
 
-void editor_add_buffer(const Editor* editor, Buffer* buffer)
+void Editor_AddBuffer(const Editor* editor, Buffer* buffer)
 {
-    buffer_list_add(editor->buffer_list, buffer);
+    BufferList_Add(editor->buffer_list, buffer);
 }
 
-void editor_set_state(Editor* editor, EditorState state)
+void Editor_SetState(Editor* editor, EditorState state)
 {
     editor->state = state;
 }

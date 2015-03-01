@@ -9,7 +9,7 @@
 
 size_t const INITIAL_BUFFER_SIZE = 8;
 
-Buffer *buffer_create(char* name)
+Buffer *Buffer_Create(char* name)
 {
     Buffer* buf = malloc(sizeof(Buffer));
     buf->filename = malloc(strlen(name) + 1);
@@ -25,14 +25,14 @@ Buffer *buffer_create(char* name)
     return buf;
 }
 
-void buffer_free(Buffer* buf)
+void Buffer_Free(Buffer* buf)
 {
     free(buf->data);
     free(buf->filename);
     free(buf);
 }
 
-void buffer_expand(Buffer* buf)
+void Buffer_Expand(Buffer* buf)
 {
     size_t new_capacity = buf->capacity * 2;
     buf->data = realloc(buf->data, new_capacity);
@@ -41,7 +41,7 @@ void buffer_expand(Buffer* buf)
 }
 
 
-void buffer_erase_char(Buffer *buf, size_t pos)
+void Buffer_EraseChar(Buffer *buf, size_t pos)
 {
     // TODO: Right now just decreases end_pos, doesn't delete right char
     int len = -1;
@@ -80,7 +80,7 @@ void buffer_erase_char(Buffer *buf, size_t pos)
 void buffer_insert(Buffer* buf, char* src, size_t len, size_t pos) {
     buf->modified = true;
     while (buf->end_pos_byte + len >= buf->capacity) {
-        buffer_expand(buf);
+        Buffer_Expand(buf);
     }
     // Make space for the insertion by moving the text after the insertion
     memmove(buf->data + pos + len, buf->data + pos, buf->end_pos_byte - pos);
@@ -92,7 +92,7 @@ void buffer_insert(Buffer* buf, char* src, size_t len, size_t pos) {
     buf->cursor_pos_char++;
 }
 
-void buffer_insert_char(Buffer* buf, int ch, size_t pos)
+void Buffer_InsertChar(Buffer* buf, int ch, size_t pos)
 {
     char* mb = malloc(MB_CUR_MAX);
 
@@ -120,7 +120,7 @@ static size_t mbstrlen(const char* str, size_t max) {
     return len + 1;
 }
 
-void buffer_try_load_from_file(Buffer* buf, const char* filename)
+void Buffer_TryLoadFromFile(Buffer* buf, const char* filename)
 {
     set_string_buf(&buf->filename, filename);
     FILE* f = fopen(filename, "r");
@@ -162,7 +162,7 @@ static size_t next_valid_mbchar_offset(Buffer * buf) {
     return mblen(buf->data + buf->cursor_pos_byte, buf->end_pos_byte);
 }
 
-void buffer_move_cursor_left(Buffer* buffer)
+void Buffer_MoveCursorLeft(Buffer* buffer)
 {
     if (buffer->cursor_pos_char > 0) {
         buffer->cursor_pos_char--;
@@ -170,7 +170,7 @@ void buffer_move_cursor_left(Buffer* buffer)
     }
 }
 
-void buffer_move_cursor_right(Buffer* buffer) {
+void Buffer_MoveCursorRight(Buffer* buffer) {
     if (buffer->cursor_pos_char < buffer->end_pos_char) {
         buffer->cursor_pos_char++;
         buffer->cursor_pos_byte += next_valid_mbchar_offset(buffer);
@@ -217,7 +217,7 @@ static void buffer_find_prev_char(const Buffer* buffer, wchar_t ch,
     }
 }
 
-void buffer_move_cursor_up(Buffer* buffer) {
+void Buffer_MoveCursorUp(Buffer* buffer) {
     size_t char_pos = 0, byte_pos = 0;
     buffer_find_prev_char(buffer, '\n', &char_pos, &byte_pos);
     buffer->cursor_pos_byte = byte_pos;
@@ -258,18 +258,18 @@ static void buffer_find_next_char(Buffer* buffer, wchar_t ch,
     }
 }
 
-void buffer_move_cursor_down(Buffer* buffer) {
+void Buffer_MoveCursorDown(Buffer* buffer) {
     size_t char_pos = 0, byte_pos = 0;
     buffer_find_next_char(buffer, '\n', &char_pos, &byte_pos);
     buffer->cursor_pos_byte = byte_pos;
     buffer->cursor_pos_char = char_pos;
 }
 
-bool buffer_is_new(const Buffer* buffer) {
+bool Buffer_IsNew(const Buffer* buffer) {
     return buffer->is_new;
 }
 
-int buffer_save(Buffer* buffer) {
+int Buffer_Save(Buffer* buffer) {
     FILE* f = fopen(buffer->filename, "w");
 
     if (!f) {
@@ -290,11 +290,11 @@ int buffer_save(Buffer* buffer) {
     return 0;
 }
 
-void buffer_reload(Buffer* buffer) {
-    buffer_try_load_from_file(buffer, buffer->filename);
+void Buffer_Reload(Buffer* buffer) {
+    Buffer_TryLoadFromFile(buffer, buffer->filename);
 }
 
-BufferList* buffer_list_create()
+BufferList* BufferList_Create()
 {
     BufferList* list = malloc(sizeof(BufferList));
     list->list = malloc(sizeof(Buffer*) * 1);
@@ -303,23 +303,23 @@ BufferList* buffer_list_create()
     return list;
 }
 
-void buffer_list_add(BufferList* list, Buffer* buffer)
+void BufferList_Add(BufferList* list, Buffer* buffer)
 {
     list->count++;
     list->list = realloc(list->list, sizeof(Buffer*) * list->count);
     list->list[list->count - 1] = buffer;
 }
 
-void buffer_list_free(BufferList* list)
+void BufferList_Free(BufferList* list)
 {
     for (size_t i = 0; i < list->count; i++) {
-        buffer_free(list->list[i]);
+        Buffer_Free(list->list[i]);
     }
     free(list->list);
     free(list);
 }
 
-void buffer_mark_new(Buffer* buffer)
+void Buffer_MarkNew(Buffer* buffer)
 {
     buffer->is_new = true;
 }

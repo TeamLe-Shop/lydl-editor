@@ -166,7 +166,7 @@ void ui_render(const Editor* editor)
     unsigned int start_file = 0;
     unsigned int end_file = start_file + 12;
     glob_t files;
-    Buffer* current_buffer = editor_current_buffer(editor);
+    Buffer* current_buffer = Editor_CurrentBuffer(editor);
     int max_x, max_y;
     getmaxyx(stdscr, max_y, max_x);
 
@@ -176,7 +176,7 @@ void ui_render(const Editor* editor)
       fill(' ', 0);
       mvprintw(0, 5, "Files");
       char open_string[14];
-      sprintf(open_string, "Open (%zu)", editor_buffer_count(editor));
+      sprintf(open_string, "Open (%zu)", Editor_BufferCount(editor));
       mvprintw(12, 0, "%-14s", open_string);
 
       fill_vert(' ', 14);
@@ -226,20 +226,20 @@ void ui_render(const Editor* editor)
       }
 
       attron(FILE_COLOR);
-     for (size_t i = 0; i < editor_buffer_count(editor); i++) {
+     for (size_t i = 0; i < Editor_BufferCount(editor); i++) {
           if (13 + i > max_y - 2) {
               break;
           }
 
-          if (editor_index_of_current_buffer(editor) == i) {
+          if (Editor_IndexOfCurrentBuffer(editor) == i) {
               attroff(FILE_COLOR);
               attron(A_BOLD);
               attron(SELECTED_COLOR);
           }
-          char * name = buffer_display_name(editor_buffer_at(editor, i));
+          char * name = buffer_display_name(Editor_BufferAt(editor, i));
           print_up_to(name, 13 + i, 0, 14);
           free(name);
-          if (editor_index_of_current_buffer(editor) == i) {
+          if (Editor_IndexOfCurrentBuffer(editor) == i) {
               attroff(SELECTED_COLOR);
               attroff(A_BOLD);
               attron(FILE_COLOR);
@@ -260,23 +260,23 @@ void ui_handle_input(Editor* editor)
 {
     wint_t ch;
     get_wch(&ch);
-    Buffer* current_buffer = editor_current_buffer(editor);
-    if (editor_state(editor) == EDITOR_STATE_EDIT) {
+    Buffer* current_buffer = Editor_CurrentBuffer(editor);
+    if (Editor_State(editor) == EDITOR_STATE_EDIT) {
         switch (ch) {
         case CKEY_BACKSPACE:
-            buffer_erase_char(current_buffer, current_buffer->cursor_pos_byte);
+            Buffer_EraseChar(current_buffer, current_buffer->cursor_pos_byte);
             break;
         case KEY_LEFT:
-            buffer_move_cursor_left(current_buffer);
+            Buffer_MoveCursorLeft(current_buffer);
             break;
         case KEY_RIGHT:
-            buffer_move_cursor_right(current_buffer);
+            Buffer_MoveCursorRight(current_buffer);
             break;
         case KEY_UP:
-            buffer_move_cursor_up(current_buffer);
+            Buffer_MoveCursorUp(current_buffer);
             break;
         case KEY_DOWN:
-            buffer_move_cursor_down(current_buffer);
+            Buffer_MoveCursorDown(current_buffer);
             break;
         case KEY_HOME:
             // buffer_move_cursor_home(current_buffer);
@@ -297,39 +297,39 @@ void ui_handle_input(Editor* editor)
             // TODO: Proper indentation
             // Now we are just inserting 4 spaces unconditionally
             for (int i = 0; i < 4; ++i) {
-                buffer_insert_char(current_buffer, ' ',
+                Buffer_InsertChar(current_buffer, ' ',
                                    current_buffer->cursor_pos_byte);
             }
             break;
         case KEY_F(5):
-            if (buffer_save(current_buffer) == -1) {
+            if (Buffer_Save(current_buffer) == -1) {
                 assert(false && "Failed to save file!");
             }
             break;
         case KEY_F(6):
-            editor_set_state(editor, EDITOR_STATE_BUFFERS);
+            Editor_SetState(editor, EDITOR_STATE_BUFFERS);
             break;
         case KEY_F(7):
-            buffer_reload(current_buffer);
+            Buffer_Reload(current_buffer);
             break;
         case KEY_F(10):
-            editor_request_quit(editor);
+            Editor_RequestQuit(editor);
             break;
         default:
-            buffer_insert_char(current_buffer, ch,
+            Buffer_InsertChar(current_buffer, ch,
                                current_buffer->cursor_pos_byte);
         }
 
-    } else if (editor_state(editor) == EDITOR_STATE_BUFFERS) {
+    } else if (Editor_State(editor) == EDITOR_STATE_BUFFERS) {
         switch (ch) {
         case KEY_F(6):
-            editor_set_state(editor, EDITOR_STATE_EDIT);
+            Editor_SetState(editor, EDITOR_STATE_EDIT);
             break;
         case KEY_UP:
-            editor_switch_to_prev_buffer(editor);
+            Editor_SwitchToPrevBuffer(editor);
             break;
         case KEY_DOWN:
-            editor_switch_to_next_buffer(editor);
+            Editor_SwitchToNextBuffer(editor);
             break;
         }
     }

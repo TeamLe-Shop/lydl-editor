@@ -17,27 +17,27 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    Editor* editor = editor_new();
+    Editor* editor = Editor_New();
 
     for (arg = 1; arg < argc; arg++) {
-        Buffer* buffer = buffer_create(argv[arg]);
-        editor_add_buffer(editor, buffer);
-        buffer_try_load_from_file(buffer, argv[arg]);
+        Buffer* buffer = Buffer_Create(argv[arg]);
+        Editor_AddBuffer(editor, buffer);
+        Buffer_TryLoadFromFile(buffer, argv[arg]);
     }
 
     if (argc < 2) {
-        Buffer* start_buffer = buffer_create("Untitled");
-        buffer_mark_new(start_buffer);
-        editor_add_buffer(editor, start_buffer);
+        Buffer* start_buffer = Buffer_Create("Untitled");
+        Buffer_MarkNew(start_buffer);
+        Editor_AddBuffer(editor, start_buffer);
     }
 
-    while (!editor_quit_requested(editor)) {
+    while (!Editor_QuitRequested(editor)) {
         ui_render(editor);
         ui_handle_input(editor);
     }
 
     ui_destroy();
-    editor_free(editor);
+    Editor_Free(editor);
 
     return EXIT_SUCCESS;
 }

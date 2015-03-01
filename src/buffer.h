@@ -28,48 +28,48 @@ typedef struct BufferList {
 } BufferList;
 
 // Create a new buffer
-Buffer* buffer_create(char* name);
+Buffer* Buffer_Create(char* name);
 
 // Free a buffer
-void buffer_free(Buffer* buf);
+void Buffer_Free(Buffer* buf);
 
 // Expand the capacity of a buffer
-void buffer_expand(Buffer* buf);
+void Buffer_Expand(Buffer* buf);
 
 // Erase character before position `pos`
-void buffer_erase_char(Buffer* buf, size_t pos);
+void Buffer_EraseChar(Buffer* buf, size_t pos);
 
 // Insert character `ch` at position `pos`
-void buffer_insert_char(Buffer* buf, int ch, size_t pos);
+void Buffer_InsertChar(Buffer* buf, int ch, size_t pos);
 
 // Load file contents into buffer
-void buffer_try_load_from_file(Buffer* buf, const char* filename);
+void Buffer_TryLoadFromFile(Buffer* buf, const char* filename);
 
-void buffer_move_cursor_left(Buffer* buffer);
-void buffer_move_cursor_right(Buffer* buffer);
-void buffer_move_cursor_up(Buffer* buffer);
-void buffer_move_cursor_down(Buffer* buffer);
+void Buffer_MoveCursorLeft(Buffer* buffer);
+void Buffer_MoveCursorRight(Buffer* buffer);
+void Buffer_MoveCursorUp(Buffer* buffer);
+void Buffer_MoveCursorDown(Buffer* buffer);
 
 // Whether the buffer points to a new file (that doesn't exist on disk yet)
-bool buffer_is_new(const Buffer* buffer);
+bool Buffer_IsNew(const Buffer* buffer);
 
 // Save the contents of the buffer into the file named by the buffer's name
 //
 // On success, returns 0, on error, returns -1
-int buffer_save(Buffer* buffer);
+int Buffer_Save(Buffer* buffer);
 
 // Reload the buffer from the corresponding file on disk
-void buffer_reload(Buffer* buffer);
+void Buffer_Reload(Buffer* buffer);
 
 // Create a buffer list
-BufferList* buffer_list_create();
+BufferList* BufferList_Create();
 
 // Add a buffer to a buffer list
-void buffer_list_add(BufferList* buffer_list, Buffer*);
+void BufferList_Add(BufferList* buffer_list, Buffer*);
 
 // Free all buffers in a buffer list and free the list itself.
-void buffer_list_free(BufferList* list);
+void BufferList_Free(BufferList* list);
 
-void buffer_mark_new(Buffer* buffer);
+void Buffer_MarkNew(Buffer* buffer);
 
 #endif  // BUFFER_H

@@ -11,18 +11,18 @@ typedef enum EditorState {
     EDITOR_STATE_BUFFERS
 } EditorState;
 
-Editor* editor_new();
-void editor_free(Editor* editor);
-bool editor_quit_requested(const Editor* editor);
-Buffer* editor_current_buffer(const Editor* editor);
-size_t editor_buffer_count(const Editor* editor);
-size_t editor_index_of_current_buffer(const Editor* editor);
-Buffer* editor_buffer_at(const Editor* editor, size_t index);
-EditorState editor_state(const Editor* editor);
-void editor_set_state(Editor* editor, EditorState state);
-void editor_switch_to_prev_buffer(Editor* editor);
-void editor_switch_to_next_buffer(Editor* editor);
-void editor_add_buffer(const Editor* editor, Buffer* buffer);
-void editor_request_quit(Editor* editor);
+Editor* Editor_New();
+void Editor_Free(Editor* editor);
+bool Editor_QuitRequested(const Editor* editor);
+Buffer* Editor_CurrentBuffer(const Editor* editor);
+size_t Editor_BufferCount(const Editor* editor);
+size_t Editor_IndexOfCurrentBuffer(const Editor* editor);
+Buffer* Editor_BufferAt(const Editor* editor, size_t index);
+EditorState Editor_State(const Editor* editor);
+void Editor_SetState(Editor* editor, EditorState state);
+void Editor_SwitchToPrevBuffer(Editor* editor);
+void Editor_SwitchToNextBuffer(Editor* editor);
+void Editor_AddBuffer(const Editor* editor, Buffer* buffer);
+void Editor_RequestQuit(Editor* editor);
 
 #endif // EDITOR_H
