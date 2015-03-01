@@ -70,4 +70,6 @@ void buffer_list_add(buffer_list_t* buffer_list, buffer_t*);
 // Free all buffers in a buffer list and free the list itself.
 void buffer_list_free(buffer_list_t* list);
 
+void buffer_mark_new(buffer_t* buffer);
+
 #endif  // BUFFER_H

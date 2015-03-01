@@ -16,8 +16,6 @@ editor_t* editor_new()
     editor_t* editor = malloc(sizeof(editor_t));
     editor->quit_requested = false;
     editor->buffer_list = buffer_list_create();
-    buffer_t* start_buffer = buffer_create("untitled (NEW)");
-    buffer_list_add(editor->buffer_list, start_buffer);
     editor->state = EDITOR_STATE_EDIT;
     return editor;
 }
@@ -76,8 +74,8 @@ void editor_switch_to_prev_buffer(editor_t* editor)
 
 void editor_switch_to_next_buffer(editor_t* editor)
 {
-    if (editor->buffer_list->active > 0) {
-        editor->buffer_list->active--;
+    if (editor->buffer_list->active < editor->buffer_list->count - 1) {
+        editor->buffer_list->active++;
     }
 }
 
@@ -85,4 +83,14 @@ void editor_switch_to_next_buffer(editor_t* editor)
 void editor_request_quit(editor_t* editor)
 {
     editor->quit_requested = true;
+}
+
+void editor_add_buffer(const editor_t* editor, buffer_t* buffer)
+{
+    buffer_list_add(editor->buffer_list, buffer);
+}
+
+void editor_set_state(editor_t* editor, editor_state_t state)
+{
+    editor->state = state;
 }

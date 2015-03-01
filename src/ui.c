@@ -48,8 +48,17 @@ static void draw_content(buffer_t* buf, int y, int x)
     int cursor_x = x, cursor_y = y;
     // bool in_quotes = false;
 
-    for (size_t i = 0; i < buf->end_pos_byte;) {
+    int max_y, max_x;
+    UNUSED(y);
+    getmaxyx(stdscr, max_y, max_x);
 
+    for (size_t i = 0; i < buf->end_pos_byte;) {
+        if (y_pos > max_y - 2) {
+            break;
+        }
+        if (x_pos > max_x - 1) {
+            continue;
+        }
         if (buf->data[i] == '\n') {
             y_pos++;
             x_pos = x;
@@ -199,12 +208,16 @@ void ui_render(const editor_t* editor)
       if (end_file > files.gl_pathc) end_file = files.gl_pathc;
 
       for (size_t file = start_file; file < end_file; file++) {
+          if (file + 1 > 11) {
+              break;
+          }
+
           if (is_dir(files.gl_pathv[file])) {
               attroff(FILE_COLOR);
               attron(DIR_COLOR);
               attron(A_BOLD);
           }
-          print_up_to(files.gl_pathv[file], 1 + file, 0, 13);
+          print_up_to(files.gl_pathv[file], 1 + file, 0, 14);
           if (is_dir(files.gl_pathv[file])) {
               attroff(DIR_COLOR);
               attroff(A_BOLD);
@@ -214,6 +227,10 @@ void ui_render(const editor_t* editor)
 
       attron(FILE_COLOR);
      for (size_t i = 0; i < editor_buffer_count(editor); i++) {
+          if (13 + i > max_y - 2) {
+              break;
+          }
+
           if (editor_index_of_current_buffer(editor) == i) {
               attroff(FILE_COLOR);
               attron(A_BOLD);
@@ -289,6 +306,9 @@ void ui_handle_input(editor_t* editor)
                 assert(false && "Failed to save file!");
             }
             break;
+        case KEY_F(6):
+            editor_set_state(editor, EDITOR_STATE_BUFFERS);
+            break;
         case KEY_F(7):
             buffer_reload(current_buffer);
             break;
@@ -302,6 +322,9 @@ void ui_handle_input(editor_t* editor)
 
     } else if (editor_state(editor) == EDITOR_STATE_BUFFERS) {
         switch (ch) {
+        case KEY_F(6):
+            editor_set_state(editor, EDITOR_STATE_EDIT);
+            break;
         case KEY_UP:
             editor_switch_to_prev_buffer(editor);
             break;

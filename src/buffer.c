@@ -318,3 +318,8 @@ void buffer_list_free(buffer_list_t* list)
     free(list->list);
     free(list);
 }
+
+void buffer_mark_new(buffer_t* buffer)
+{
+    buffer->is_new = true;
+}
