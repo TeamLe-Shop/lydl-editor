@@ -7,6 +7,8 @@
 #define FILE_COLOR COLOR_PAIR(2)
 #define DIR_COLOR COLOR_PAIR(3)
 #define SELECTED_COLOR COLOR_PAIR(4)
+#define PREPROC_COLOR COLOR_PAIR(5)
+#define STRING_COLOR COLOR_PAIR(6)
 
 // Initialize the user interface
 bool ui_init();

@@ -1,6 +1,7 @@
 #include "ui.h"
 #include "util.h"
 #include "buffer.h"
+#include "syntax.h"
 
 #include <curses.h>
 #include <stdlib.h>
@@ -41,6 +42,52 @@ static void fill_vert(char ch, int col)
     }
 }
 
+static void paint_begin(TokenList* tokens, size_t idx) {
+    Token* tok = TokenList_Current(tokens);
+
+    if (tok == NULL || tok->begin_end != TOKEN_BEGIN) {
+        return;
+    }
+
+    if (idx == tok->pos) {
+        switch (tok->type) {
+        case TOKEN_COMMENT:
+            attron(DIR_COLOR);
+            break;
+        case TOKEN_PREPROC:
+            attron(PREPROC_COLOR);
+            break;
+        case TOKEN_STRING:
+            attron(STRING_COLOR);
+            break;
+        }
+        TokenList_Advance(tokens);
+    }
+}
+
+static void paint_end(TokenList* tokens, size_t idx) {
+    Token* tok = TokenList_Current(tokens);
+
+    if (tok == NULL || tok->begin_end != TOKEN_END) {
+        return;
+    }
+
+    if (idx == tok->pos) {
+        switch (tok->type) {
+        case TOKEN_COMMENT:
+            attroff(DIR_COLOR);
+            break;
+        case TOKEN_PREPROC:
+            attroff(PREPROC_COLOR);
+            break;
+        case TOKEN_STRING:
+            attroff(STRING_COLOR);
+            break;
+        }
+        TokenList_Advance(tokens);
+    }
+}
+
 // Draw the contents of a buffer. (Usually editor contents)
 static void draw_content(Buffer* buf, int y, int x)
 {
@@ -51,6 +98,7 @@ static void draw_content(Buffer* buf, int y, int x)
     int max_y, max_x;
     UNUSED(y);
     getmaxyx(stdscr, max_y, max_x);
+    TokenList* tokens = tokenize(buf->data, buf->end_pos_byte, SOURCE_TYPE_C);
 
     for (size_t i = 0; i < buf->end_pos_byte;) {
         if (y_pos > max_y - 2) {
@@ -71,12 +119,12 @@ static void draw_content(Buffer* buf, int y, int x)
             x_pos++;
             len = mbtowc(&wc, buf->data + i, buf->capacity - i);
             assert(len > 0 && "Invalid multibyte sequence.");
-            if (buf->data[i] == '/' && buf->data[i+1] == '*') {
-                attron(DIR_COLOR);
+            if (tokens != NULL) {
+                paint_begin(tokens, i);
             }
             mvprintw(y_pos, x_pos, "%C", wc);
-            if (buf->data[i] == '/' && i > 0 && buf->data[i-1] == '*') {
-                attroff(DIR_COLOR);
+            if (tokens != NULL) {
+                paint_end(tokens, i);
             }
             i += len;
         }
@@ -85,6 +133,8 @@ static void draw_content(Buffer* buf, int y, int x)
             cursor_y = y_pos;
         }
     }
+
+    TokenList_Free(tokens);
 
     move(cursor_y, cursor_x + 1);
 }
@@ -130,6 +180,8 @@ static void init_colors(void)
     init_pair(2, COLOR_WHITE, COLOR_BLACK);
     init_pair(3, COLOR_BLUE, COLOR_BLACK);
     init_pair(4, COLOR_WHITE, COLOR_GREEN);
+    init_pair(5, COLOR_GREEN, COLOR_BLACK);
+    init_pair(6, COLOR_YELLOW, COLOR_BLUE);
 }
 
 bool ui_init()
