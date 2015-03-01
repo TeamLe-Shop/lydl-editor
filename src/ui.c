@@ -42,7 +42,7 @@ static void fill_vert(char ch, int col)
 }
 
 // Draw the contents of a buffer. (Usually editor contents)
-static void draw_content(buffer_t* buf, int y, int x)
+static void draw_content(Buffer* buf, int y, int x)
 {
     int x_pos = x, y_pos = y;
     int cursor_x = x, cursor_y = y;
@@ -148,7 +148,7 @@ bool ui_init()
     return true;
 }
 
-static char * buffer_display_name(const buffer_t * buf) {
+static char * buffer_display_name(const Buffer * buf) {
     char * name = copy_string_into_new_buf(buf->filename);
 
     if (buf->is_new) {
@@ -160,13 +160,13 @@ static char * buffer_display_name(const buffer_t * buf) {
     return name;
 }
 
-void ui_render(const editor_t* editor)
+void ui_render(const Editor* editor)
 {
     erase();
     unsigned int start_file = 0;
     unsigned int end_file = start_file + 12;
     glob_t files;
-    buffer_t* current_buffer = editor_current_buffer(editor);
+    Buffer* current_buffer = editor_current_buffer(editor);
     int max_x, max_y;
     getmaxyx(stdscr, max_y, max_x);
 
@@ -256,11 +256,11 @@ void ui_render(const editor_t* editor)
     draw_content(current_buffer, 1, 14);
 }
 
-void ui_handle_input(editor_t* editor)
+void ui_handle_input(Editor* editor)
 {
     wint_t ch;
     get_wch(&ch);
-    buffer_t* current_buffer = editor_current_buffer(editor);
+    Buffer* current_buffer = editor_current_buffer(editor);
     if (editor_state(editor) == EDITOR_STATE_EDIT) {
         switch (ch) {
         case CKEY_BACKSPACE:

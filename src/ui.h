@@ -12,10 +12,10 @@
 bool ui_init();
 
 // Draw the user interface
-void ui_render(const editor_t* editor);
+void ui_render(const Editor* editor);
 
 // Handle user input
-void ui_handle_input(editor_t* editor);
+void ui_handle_input(Editor* editor);
 
 // Destroy the user interface
 void ui_destroy();

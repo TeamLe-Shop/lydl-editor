@@ -9,9 +9,9 @@
 
 size_t const INITIAL_BUFFER_SIZE = 8;
 
-buffer_t *buffer_create(char* name)
+Buffer *buffer_create(char* name)
 {
-    buffer_t* buf = malloc(sizeof(buffer_t));
+    Buffer* buf = malloc(sizeof(Buffer));
     buf->filename = malloc(strlen(name) + 1);
     strncpy(buf->filename, name, strlen(name) + 1);
     buf->data = malloc(INITIAL_BUFFER_SIZE);
@@ -25,14 +25,14 @@ buffer_t *buffer_create(char* name)
     return buf;
 }
 
-void buffer_free(buffer_t* buf)
+void buffer_free(Buffer* buf)
 {
     free(buf->data);
     free(buf->filename);
     free(buf);
 }
 
-void buffer_expand(buffer_t* buf)
+void buffer_expand(Buffer* buf)
 {
     size_t new_capacity = buf->capacity * 2;
     buf->data = realloc(buf->data, new_capacity);
@@ -41,7 +41,7 @@ void buffer_expand(buffer_t* buf)
 }
 
 
-void buffer_erase_char(buffer_t *buf, size_t pos)
+void buffer_erase_char(Buffer *buf, size_t pos)
 {
     // TODO: Right now just decreases end_pos, doesn't delete right char
     int len = -1;
@@ -77,7 +77,7 @@ void buffer_erase_char(buffer_t *buf, size_t pos)
     buf->cursor_pos_char--;
 }
 
-void buffer_insert(buffer_t* buf, char* src, size_t len, size_t pos) {
+void buffer_insert(Buffer* buf, char* src, size_t len, size_t pos) {
     buf->modified = true;
     while (buf->end_pos_byte + len >= buf->capacity) {
         buffer_expand(buf);
@@ -92,7 +92,7 @@ void buffer_insert(buffer_t* buf, char* src, size_t len, size_t pos) {
     buf->cursor_pos_char++;
 }
 
-void buffer_insert_char(buffer_t* buf, int ch, size_t pos)
+void buffer_insert_char(Buffer* buf, int ch, size_t pos)
 {
     char* mb = malloc(MB_CUR_MAX);
 
@@ -120,7 +120,7 @@ static size_t mbstrlen(const char* str, size_t max) {
     return len + 1;
 }
 
-void buffer_try_load_from_file(buffer_t* buf, const char* filename)
+void buffer_try_load_from_file(Buffer* buf, const char* filename)
 {
     set_string_buf(&buf->filename, filename);
     FILE* f = fopen(filename, "r");
@@ -145,7 +145,7 @@ void buffer_try_load_from_file(buffer_t* buf, const char* filename)
     fclose(f);
 }
 
-static size_t prev_valid_mbchar_offset(buffer_t* buf) {
+static size_t prev_valid_mbchar_offset(Buffer* buf) {
     // Keep going back until we find a valid multibyte char
     // Return the byte offset of what we travelled
     int offset = -1;
@@ -158,11 +158,11 @@ static size_t prev_valid_mbchar_offset(buffer_t* buf) {
     assert(false && "No valid multibyte char found!");
 }
 
-static size_t next_valid_mbchar_offset(buffer_t * buf) {
+static size_t next_valid_mbchar_offset(Buffer * buf) {
     return mblen(buf->data + buf->cursor_pos_byte, buf->end_pos_byte);
 }
 
-void buffer_move_cursor_left(buffer_t* buffer)
+void buffer_move_cursor_left(Buffer* buffer)
 {
     if (buffer->cursor_pos_char > 0) {
         buffer->cursor_pos_char--;
@@ -170,14 +170,14 @@ void buffer_move_cursor_left(buffer_t* buffer)
     }
 }
 
-void buffer_move_cursor_right(buffer_t* buffer) {
+void buffer_move_cursor_right(Buffer* buffer) {
     if (buffer->cursor_pos_char < buffer->end_pos_char) {
         buffer->cursor_pos_char++;
         buffer->cursor_pos_byte += next_valid_mbchar_offset(buffer);
     }
 }
 
-static void buffer_find_prev_char(const buffer_t* buffer, wchar_t ch,
+static void buffer_find_prev_char(const Buffer* buffer, wchar_t ch,
                                   size_t* char_pos, size_t* byte_pos) {
     int consumed = 0;
     int i = 0;
@@ -217,14 +217,14 @@ static void buffer_find_prev_char(const buffer_t* buffer, wchar_t ch,
     }
 }
 
-void buffer_move_cursor_up(buffer_t* buffer) {
+void buffer_move_cursor_up(Buffer* buffer) {
     size_t char_pos = 0, byte_pos = 0;
     buffer_find_prev_char(buffer, '\n', &char_pos, &byte_pos);
     buffer->cursor_pos_byte = byte_pos;
     buffer->cursor_pos_char = char_pos;
 }
 
-static void buffer_find_next_char(buffer_t* buffer, wchar_t ch,
+static void buffer_find_next_char(Buffer* buffer, wchar_t ch,
                                   size_t* char_pos, size_t* byte_pos) {
     int consumed = 0;
     int i = 0;
@@ -258,18 +258,18 @@ static void buffer_find_next_char(buffer_t* buffer, wchar_t ch,
     }
 }
 
-void buffer_move_cursor_down(buffer_t* buffer) {
+void buffer_move_cursor_down(Buffer* buffer) {
     size_t char_pos = 0, byte_pos = 0;
     buffer_find_next_char(buffer, '\n', &char_pos, &byte_pos);
     buffer->cursor_pos_byte = byte_pos;
     buffer->cursor_pos_char = char_pos;
 }
 
-bool buffer_is_new(const buffer_t* buffer) {
+bool buffer_is_new(const Buffer* buffer) {
     return buffer->is_new;
 }
 
-int buffer_save(buffer_t* buffer) {
+int buffer_save(Buffer* buffer) {
     FILE* f = fopen(buffer->filename, "w");
 
     if (!f) {
@@ -290,27 +290,27 @@ int buffer_save(buffer_t* buffer) {
     return 0;
 }
 
-void buffer_reload(buffer_t* buffer) {
+void buffer_reload(Buffer* buffer) {
     buffer_try_load_from_file(buffer, buffer->filename);
 }
 
-buffer_list_t* buffer_list_create()
+BufferList* buffer_list_create()
 {
-    buffer_list_t* list = malloc(sizeof(buffer_list_t));
-    list->list = malloc(sizeof(buffer_t*) * 1);
+    BufferList* list = malloc(sizeof(BufferList));
+    list->list = malloc(sizeof(Buffer*) * 1);
     list->count = 0;
     list->active = 0;
     return list;
 }
 
-void buffer_list_add(buffer_list_t* list, buffer_t* buffer)
+void buffer_list_add(BufferList* list, Buffer* buffer)
 {
     list->count++;
-    list->list = realloc(list->list, sizeof(buffer_t*) * list->count);
+    list->list = realloc(list->list, sizeof(Buffer*) * list->count);
     list->list[list->count - 1] = buffer;
 }
 
-void buffer_list_free(buffer_list_t* list)
+void buffer_list_free(BufferList* list)
 {
     for (size_t i = 0; i < list->count; i++) {
         buffer_free(list->list[i]);
@@ -319,7 +319,7 @@ void buffer_list_free(buffer_list_t* list)
     free(list);
 }
 
-void buffer_mark_new(buffer_t* buffer)
+void buffer_mark_new(Buffer* buffer)
 {
     buffer->is_new = true;
 }

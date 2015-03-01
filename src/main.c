@@ -17,16 +17,16 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    editor_t* editor = editor_new();
+    Editor* editor = editor_new();
 
     for (arg = 1; arg < argc; arg++) {
-        buffer_t* buffer = buffer_create(argv[arg]);
+        Buffer* buffer = buffer_create(argv[arg]);
         editor_add_buffer(editor, buffer);
         buffer_try_load_from_file(buffer, argv[arg]);
     }
 
     if (argc < 2) {
-        buffer_t* start_buffer = buffer_create("Untitled");
+        Buffer* start_buffer = buffer_create("Untitled");
         buffer_mark_new(start_buffer);
         editor_add_buffer(editor, start_buffer);
     }
