@@ -1,18 +1,22 @@
 #include "syntax.h"
 
 #include <stdlib.h>
+#include <stdbool.h>
 
 static TokenList* tokenize_c(const char* source, size_t size) {
     TokenList* list = malloc(sizeof(TokenList));
     list->index = 0;
     list->tokens = Vector_New();
+    bool inside_preproc = false;
 
     for (size_t i = 0; i < size; ++i) {
         if (source[i] == '#') {
+            inside_preproc = true;
             Token t = { TOKEN_PREPROC, TOKEN_BEGIN, i };
             Vector_Add(list->tokens, Token, t);
         }
-        if (i < size - 1 && source[i + 1] == ' ') {
+        if (inside_preproc && i < size - 1 && source[i + 1] == ' ') {
+            inside_preproc = false;
             Token t = { TOKEN_PREPROC, TOKEN_END, i };
             Vector_Add(list->tokens, Token, t);
         }
