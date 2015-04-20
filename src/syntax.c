@@ -8,6 +8,7 @@ static TokenList* tokenize_c(const char* source, size_t size) {
     list->index = 0;
     list->tokens = Vector_New();
     bool inside_preproc = false;
+    bool inside_string = false;
 
     for (size_t i = 0; i < size; ++i) {
         if (source[i] == '#') {
@@ -27,6 +28,17 @@ static TokenList* tokenize_c(const char* source, size_t size) {
         if (source[i] == '>') {
             Token t = { TOKEN_STRING, TOKEN_END, i };
             Vector_Add(list->tokens, Token, t);
+        }
+        if (source[i] == '"') {
+            if (!inside_string) {
+                inside_string = true;
+                Token t = { TOKEN_STRING, TOKEN_BEGIN, i };
+                Vector_Add(list->tokens, Token, t);
+            } else {
+                inside_string = false;
+                Token t = { TOKEN_STRING, TOKEN_END, i };
+                Vector_Add(list->tokens, Token, t);
+            }
         }
     }
 
